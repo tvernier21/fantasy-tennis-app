@@ -1,16 +1,17 @@
 'use client';
 
 import axios from 'axios';
+import { signIn } from 'next-auth/react';
 import { AiFillFacebook } from 'react-icons/ai';
 import { FcGoogle } from 'react-icons/fc';
 import { useCallback, useState } from 'react';
 import { Field, FieldValues, SubmitHandler, useForm } from 'react-hook-form';
+import { toast } from 'react-hot-toast';
 
 import useRegisterModal from '@/app/hooks/useRegisterModal';
 import Modal from './Modal';
 import Heading from '../Heading';
 import Input from '../Inputs/Input';
-import { toast } from 'react-hot-toast';
 import Button from '../Button';
 
 const RegisterModal = () => {
@@ -86,7 +87,7 @@ const RegisterModal = () => {
                 outline
                 label="Continue with Google"
                 icon={FcGoogle}
-                onClick={() => {}}
+                onClick={() => signIn('google')}
             />
             <Button 
                 outline

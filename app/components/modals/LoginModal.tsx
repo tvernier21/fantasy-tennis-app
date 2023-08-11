@@ -6,13 +6,13 @@ import { FcGoogle } from 'react-icons/fc';
 import { useCallback, useState } from 'react';
 import { Field, FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 import useLoginModal from '@/app/hooks/useLoginModal';
 import Modal from './Modal';
 import Heading from '../Heading';
 import Input from '../Inputs/Input';
 import Button from '../Button';
-import { useRouter } from 'next/navigation';
 
 const LoginModal = () => {
     const router = useRouter();
@@ -83,7 +83,7 @@ const LoginModal = () => {
                 outline
                 label="Continue with Google"
                 icon={FcGoogle}
-                onClick={() => {}}
+                onClick={() => signIn('google')}
             />
             <Button 
                 outline
