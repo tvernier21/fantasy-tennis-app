@@ -18,14 +18,14 @@ const UserMenu = () => {
         setIsOpen((value) => !value);
     }, []);
 
-    function closeUserMenuOnClick(isLogin?: boolean) {
-        toggleOpen()
-        if (isLogin) {
-            loginModal.onOpen()
-        } else {
-            registerModal.onOpen()
-        }
-    }
+    // function closeUserMenuOnClick(isLogin?: boolean) {
+    //     toggleOpen()
+    //     if (isLogin) {
+    //         loginModal.onOpen()
+    //     } else {
+    //         registerModal.onOpen()
+    //     }
+    // }
 
     return (
         <div className="relative">
@@ -49,11 +49,11 @@ const UserMenu = () => {
                     <div className="flex flex-col cursor-pointer">
                         <>
                             <MenuItem 
-                                onClick={closeUserMenuOnClick}
+                                onClick={loginModal.onOpen}
                                 label="Login"
                             />
                             <MenuItem 
-                                onClick={closeUserMenuOnClick}
+                                onClick={registerModal.onOpen}
                                 label="Sign Up"
                             />
                         </>
