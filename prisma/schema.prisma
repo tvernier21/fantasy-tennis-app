@@ -96,6 +96,9 @@ model TournamentPlayer {
   tournament    Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
   matchesWon    Match[]    @relation("winner")
   matchesLost   Match[]    @relation("loser")
+  
+  teamId        String?    @db.ObjectId
+  teams         Team?      @relation(fields: [teamId], references: [id])
 }
 
 model Tournament {
