@@ -41,7 +41,8 @@ const RegisterModal = () => {
             })
             .finally(() => {
                 setIsLoading(false);
-            })
+            }
+        )
     }
 
     const bodyContent = (
