@@ -39,10 +39,13 @@ const Modal: React.FC<ModalProps> = ({
         if (disabled) {
             return;
         }
+        
         setShowModal(false);
         setTimeout(() => {
             onClose();
         }, 300);
+        // TODO: clear input values
+        
     }, [disabled, onClose]);
 
     const handleSubmit = useCallback(() => {
@@ -103,11 +106,13 @@ const Modal: React.FC<ModalProps> = ({
                                         />
                                     )}
                                     <Button
+                                        outline
                                         disabled={disabled}
                                         label={actionLabel}
                                         onClick={handleSubmit}
                                     />
                                 </div>
+                                {footer}
                             </div>
                         </div>
                     </div>

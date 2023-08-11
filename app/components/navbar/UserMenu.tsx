@@ -4,13 +4,28 @@ import { AiOutlineMenu } from "react-icons/ai";
 import { useCallback, useState } from 'react';
 import Avatar from '../Avatar';
 import MenuItem from './MenuItem';
+import useRegisterModal from "@/app/hooks/useRegisterModal";
+import useLoginModal from "@/app/hooks/useLoginModal";
+import LoginModal from "../modals/LoginModal";
 
 const UserMenu = () => {
+    const registerModal = useRegisterModal()
+    const loginModal = useLoginModal()
+    
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleOpen = useCallback(() => {
-        setIsOpen((value) => !value);  // return opposite of current value
+        setIsOpen((value) => !value);
     }, []);
+
+    function closeUserMenuOnClick(isLogin?: boolean) {
+        toggleOpen()
+        if (isLogin) {
+            loginModal.onOpen()
+        } else {
+            registerModal.onOpen()
+        }
+    }
 
     return (
         <div className="relative">
@@ -30,21 +45,21 @@ const UserMenu = () => {
                 </div>
             </div>
             {isOpen && (
-                    <div className="absolute rounded-xl shadow-md w-[40vw] md:w-3/4 bg-white overflow-hidden right-0 top-12 text-sm">
-                        <div className="flex flex-col cursor-pointer">
-                            <>
-                                <MenuItem 
-                                    onClick={() => {}}
-                                    label="Login"
-                                />
-                                <MenuItem 
-                                    onClick={() => {}}
-                                    label="Sign Up"
-                                />
-                            </>
-                        </div>
+                <div className="absolute rounded-xl shadow-md w-[40vw] md:w-3/4 bg-white overflow-hidden right-0 top-12 text-sm">
+                    <div className="flex flex-col cursor-pointer">
+                        <>
+                            <MenuItem 
+                                onClick={closeUserMenuOnClick}
+                                label="Login"
+                            />
+                            <MenuItem 
+                                onClick={closeUserMenuOnClick}
+                                label="Sign Up"
+                            />
+                        </>
                     </div>
-                )}
+                </div>
+            )}
         </div>
     )
 }
