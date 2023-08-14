@@ -38,7 +38,8 @@ const Button: React.FC<ButtonProps> = ({
                 ${small ? 'text-sm' : 'text-md'}
                 ${small ? 'font-light' : 'font-semibold'}
                 ${small ? 'border-[1px]' : 'border-2'}
-            `}>
+            `}
+        >
             {Icon && (
                 <Icon
                     size={24}
