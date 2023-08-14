@@ -9,6 +9,7 @@ import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 
 import useLoginModal from '@/app/hooks/useLoginModal';
+import useRegisterModal from '@/app/hooks/useRegisterModal';
 import Modal from './Modal';
 import Heading from '../Heading';
 import Input from '../Inputs/Input';
@@ -16,7 +17,8 @@ import Button from '../Button';
 
 const LoginModal = () => {
     const router = useRouter();
-    const LoginModal = useLoginModal();
+    const loginModal = useLoginModal();
+    const registerModal = useRegisterModal();
     const [isLoading, setIsLoading] = useState(false);
 
     const {
@@ -42,13 +44,18 @@ const LoginModal = () => {
             if (callback?.ok) {
                 toast.success("Logged in");
                 router.refresh()
-                LoginModal.onClose();
+                loginModal.onClose();
             }
             if (callback?.error) {
                 toast.error(callback.error);
             }
         })
     }
+
+    const toggleAccountModal = useCallback(() => {
+        loginModal.onClose();
+        registerModal.onOpen();
+    }, [loginModal, registerModal]);
 
     const bodyContent = (
         <div className=" flex flex-col gap-4">
@@ -91,6 +98,19 @@ const LoginModal = () => {
                 icon={AiFillFacebook}
                 onClick={() => {}}
             />
+            <div className="text-neutral-500 text-center mt-4 font-light">
+                <div className="justify-center flex flex-row items-center gap-2">
+                    <div>
+                        First time here?
+                    </div>
+                    <div 
+                        className="text-neutral-800 cursor-pointer hover:underline"
+                        onClick={toggleAccountModal}
+                    >
+                        Create an account  
+                    </div>
+                </div>
+            </div>
         </div>
     )
         
@@ -98,10 +118,10 @@ const LoginModal = () => {
         <div>
             <Modal 
                 disabled={isLoading}
-                isOpen={LoginModal.isOpen}
+                isOpen={loginModal.isOpen}
                 title="Login"
                 actionLabel="Continue"
-                onClose={LoginModal.onClose}
+                onClose={loginModal.onClose}
                 onSubmit={handleSubmit(onSubmit)}
                 body={bodyContent}
                 footer={footerContent}
