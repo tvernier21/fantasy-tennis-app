@@ -22,7 +22,7 @@ export const authOptions: AuthOptions = {
             name: "credentials",
             credentials: {
                 username: { label: "Username", type: "text", placeholder: "jsmith" },
-                password: { label: "Password", type: "password" },
+                password: { label: "Password", type: "password" }
             },
             async authorize(credentials) {
                 if (!credentials?.username || !credentials?.password) {
@@ -30,7 +30,7 @@ export const authOptions: AuthOptions = {
                 }
 
                 const user = await prisma.user.findUnique({
-                    where: { username: credentials.username },
+                    where: { username: credentials.username }
                 });
 
                 if (!user || !user?.hashedPassword) {
