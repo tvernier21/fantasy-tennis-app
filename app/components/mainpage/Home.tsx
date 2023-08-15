@@ -3,7 +3,6 @@
 import Heading from '../Heading';
 
 const Home = () => {
-    console.log('home page')
     return (
         <div className='pt-24'>
             <div className='flex flex-col justify-center'>

@@ -1,14 +1,14 @@
 import prisma from "@/app/libs/prismadb";
 
-export default async function getPlayers() {
+export default async function getTournaments() {
     try {
-        const players = await prisma.player.findMany({
+        const tournaments = await prisma.tournament.findMany({
             orderBy: {
                 name: 'asc'
             },
         });
 
-        return players;
+        return tournaments;
     } catch (error: any) {
         throw new Error(error);
     }
