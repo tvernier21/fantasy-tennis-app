@@ -33,13 +33,16 @@ export const categories = [
     }
 ]
 
-interface CategoriesProps {
-    selectedCategory: string | null | undefined;
-}
+const Categories = () => {
+    const params = useSearchParams();
+    const category = params?.get('category');
+    const pathname = usePathname();
 
-const Categories: React.FC<CategoriesProps> = ({
-    selectedCategory
-}) => {
+    const isMainPage = pathname === '/';
+
+    if (!isMainPage) {
+        return null;
+    }
 
     return (
         <Container>
@@ -48,7 +51,7 @@ const Categories: React.FC<CategoriesProps> = ({
                     <CategoryBox
                         key={item.label}
                         label={item.label}
-                        selected={selectedCategory === item.label}
+                        selected={category === item.label}
                         icon={item.icon}
                     />
                 ))}

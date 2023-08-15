@@ -1,5 +1,14 @@
-export default function Home() {
+import Container from './components/Container'
+import ClientOnly from './components/ClientOnly'
+import getCurrentUser from './actions/getCurrentUser'
+import MainPage from './components/mainpage/MainPage'
+
+export default async function Home() {
+  const currentUser = await getCurrentUser()
+
   return (
-    <div className=" text-rose-500 text-2xl">Hello Fantasy Tennis!</div>
+    <ClientOnly>
+      <MainPage currentUser={currentUser} />
+    </ClientOnly>
   )
 }
