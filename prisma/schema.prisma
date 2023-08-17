@@ -75,8 +75,9 @@ model Team {
 model Player {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   name          String
+  age           Float?
+  rank          Int
   elo           Float[]
-  yelo          Float[]
   hard_elo      Float[]
   clay_elo      Float[]
   grass_elo     Float[]
