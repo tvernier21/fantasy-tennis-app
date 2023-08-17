@@ -1,5 +1,7 @@
 'use client';
 
+import React from 'react';
+
 import Heading from "@/app/components/Heading";
 import useLoginModal from "@/app/hooks/useLoginModal";
 import useRegisterModal from "@/app/hooks/useRegisterModal";
