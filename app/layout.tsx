@@ -1,4 +1,5 @@
 import { Nunito } from 'next/font/google'
+import React from 'react'
 
 import Navbar from './components/navbar/Navbar'
 import ClientOnly from './components/ClientOnly'
@@ -6,7 +7,6 @@ import RegisterModal from './components/modals/RegisterModal'
 import LoginModal from './components/modals/LoginModal'
 import ToasterProvider from './providers/ToasterProvider'
 import getCurrentUser from './actions/getCurrentUser'
-import MainPage from './components/mainpage/MainPage'
 
 import './globals.css'
 
@@ -37,7 +37,7 @@ export default async function RootLayout({
             currentUser={currentUser} 
           />
         </ClientOnly>
-        <div className="pb-20 pt-28">
+        <div className="pb-24 pt-28 mt-32">
           {children}
         </div>
       </body>

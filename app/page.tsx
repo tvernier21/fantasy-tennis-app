@@ -1,23 +1,30 @@
-import ClientOnly from './components/ClientOnly'
-import getCurrentUser from './actions/getCurrentUser'
-import MainPage from './components/mainpage/MainPage'
-import getPlayers from './actions/getPlayers'
-import getTournaments from './actions/getTournaments'
+import ClientOnly from "./components/ClientOnly"
+import Container from "./components/Container"
+import HomePage from "./components/pages/HomePage"
 
 export default async function Home() {
-  const currentUser = await getCurrentUser()
-  const players = await getPlayers()
-  const tournaments = await getTournaments()
+
+  const isHome = true
+  if (isHome) {
+    return (
+      <ClientOnly>
+        <HomePage />
+      </ClientOnly>
+    )
+  }
 
   return (
-    // <ClientOnly>
-    //   <MainPage 
-    //     currentUser={currentUser} 
-    //     players={players}
-    //     tournaments={tournaments}
-    //   />
-    // </ClientOnly>
-    <div>
-    </div>
+    <ClientOnly>
+      <Container>
+        <div className="flex flex-col md:flex-row">
+          <div className="md:w-1/4 w-full">
+            Left Side Content
+          </div>
+          <div className="md:w-3/4 w-full">
+            Right Side Content
+          </div>
+        </div>
+      </Container>
+    </ClientOnly>
   )
 }
