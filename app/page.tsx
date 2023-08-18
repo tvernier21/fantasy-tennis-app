@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 
 import getPlayers from "./actions/getPlayers"
 import getTournaments from "./actions/getTournaments"
@@ -6,32 +6,18 @@ import getTournaments from "./actions/getTournaments"
 import ClientOnly from "./components/ClientOnly"
 import Container from "./components/Container"
 import HomePage from "./components/pages/HomePage"
+import Contents from "./components/pages/Contents"
 
-export default async function Home() {
+export default async function Main() {
   const players = await getPlayers()
   const tournaments = await getTournaments()
-
-  const isHome = true
-  
-  if (isHome) {
-    return (
-      <ClientOnly>
-        <HomePage />
-      </ClientOnly>
-    )
-  }
 
   return (
     <ClientOnly>
       <Container>
-        <div className="flex flex-col md:flex-row">
-          <div className="md:w-1/4 w-full">
-            Left Side Content
-          </div>
-          <div className="md:w-3/4 w-full">
-            Right Side Content
-          </div>
-        </div>
+        <Contents 
+          players={players}
+        />
       </Container>
     </ClientOnly>
   )

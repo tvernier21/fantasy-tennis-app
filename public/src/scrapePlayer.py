@@ -44,20 +44,21 @@ for player in players_html:
         "name": data[1].text.strip().replace("\xa0", " "),
         "age": age,
         "rank": int(data[0].text),
-        "elo": elo,
-        "hard_elo": hard_elo,
-        "clay_elo": clay_elo,
-        "grass_elo": grass_elo,
-        "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "updated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        "elo": [elo],
+        "hard_elo": [hard_elo],
+        "clay_elo": [clay_elo],
+        "grass_elo": [grass_elo],
+        "createdAt": datetime.now(),
+        "updatedAt": datetime.now()
     })
 
 # Connect to Database
 client = MongoClient(DATABASE_URL)
-db = client["fantasy-tennis-db"]
+db = client["test"]
 collection = db["Player"]
 
 # Insert players into database
+# collection.delete_many({})
 result = collection.insert_many(players)
 print(result.acknowledged)
 print(len(result.inserted_ids))

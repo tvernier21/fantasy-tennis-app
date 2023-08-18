@@ -4,7 +4,7 @@ export default async function getPlayers() {
     try {
         const players = await prisma.player.findMany({
             orderBy: {
-                name: 'asc'
+                rank: 'asc'
             },
         });
 
