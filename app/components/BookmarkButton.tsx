@@ -4,7 +4,7 @@ import { BsBookmarkPlusFill, BsBookmarkPlus, BsBook } from "react-icons/bs";
 import React, { useState } from "react";
 
 
-const HeartButton = () => {
+const BookmarkButton = () => {
   const [isFavorited, setIsFavorited] = useState(false);
 
   return (
@@ -26,4 +26,4 @@ const HeartButton = () => {
    );
 }
  
-export default HeartButton;
+export default BookmarkButton;
