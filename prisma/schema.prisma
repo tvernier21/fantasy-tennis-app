@@ -107,9 +107,12 @@ model TournamentPlayer {
 model Tournament {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   name          String
+  location      String
+  date          Int
   surface       String
-  year          Int
-  difficulty    String
+  difficulty    Int
+  img           String?
+  link          String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
