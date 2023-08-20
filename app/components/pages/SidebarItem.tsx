@@ -60,7 +60,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
             className={`
                 rounded-xl w-full h-32 relative overflow-hidden bg-gray-100 p-3 cursor-pointer transition-colors duration-300
                 hover:shadow-md hover:bg-gray-200
-                ${selected ? 'bg-gray-200' : ''}
+                ${selected ? 'bg-neutral-500/50' : ''}
             `}
             onClick={handleClick}        
         >
