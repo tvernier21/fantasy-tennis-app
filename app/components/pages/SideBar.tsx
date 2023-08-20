@@ -13,10 +13,7 @@ interface SideBarProps {
         name: string; 
         age: number | null; 
         rank: number; 
-        elo: number[]; 
-        hard_elo: number[]; 
-        clay_elo: number[]; 
-        grass_elo: number[]; 
+        elo: number;
         createdAt: Date; 
         updatedAt: Date; 
     }[] | {

@@ -66,13 +66,13 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         >
             <div className="flex items-center justify-between h-full">
                 {/* Thumbnail */}
-                <div className="flex-shrink-0" style={{flexBasis: showBookmark ? '20%' : '33.33%'}}>
+                <div className="flex-shrink-0" style={{flexBasis: showBookmark ? '20%' : '20%'}}>
                     <Thumbnail img={img} />
                 </div>
 
     
                 {/* Text */}
-                <div className="ml-4 overflow-hidden" style={{flexBasis: showBookmark ? '60%' : '66.66%'}}>
+                <div className="ml-4 overflow-hidden" style={{flexBasis: showBookmark ? '60%' : '80%'}}>
                     <a href="#" className="block h-full overflow-y-auto">
                         <h3 className="text-xl font-semibold mb-2 truncate">{title}</h3>
                         <p className="text-gray-600 mb-1 truncate">{description}</p>

@@ -1,14 +1,18 @@
 import React from "react"
 
-import getPlayers from "../../actions/getPlayers"
+import getPlayers, { PlayersParams } from "../../actions/getPlayers"
 
 import ClientOnly from "../../components/ClientOnly"
 import Container from "../../components/Container"
 import Contents from "../../components/pages/Contents"
 
-export default async function PlayersPage() {
-  const players = await getPlayers()
+interface PlayersPageProps {
+  searchParams: PlayersParams
+}
 
+const PlayersPage = async ({ searchParams }: PlayersPageProps) => {
+  const players = await getPlayers(searchParams)
+  
   return (
     <ClientOnly>
       <Container>
@@ -18,4 +22,6 @@ export default async function PlayersPage() {
       </Container>
     </ClientOnly>
   )
-}
+};
+
+export default PlayersPage;

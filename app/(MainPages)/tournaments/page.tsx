@@ -1,13 +1,17 @@
 import React from "react"
 
-import getTournaments from "../../actions/getTournaments"
+import getTournaments, { TournamentsParams }  from "../../actions/getTournaments"
 
 import ClientOnly from "../../components/ClientOnly"
 import Container from "../../components/Container"
 import Contents from "../../components/pages/Contents"
 
-export default async function Main() {
-  const tournaments = await getTournaments()
+interface TournamentsPageProps {
+  searchParams: TournamentsParams
+}
+
+const TournamentsPage = async ({searchParams} : TournamentsPageProps) => {
+  const tournaments = await getTournaments(searchParams)
 
   return (
     <ClientOnly>
@@ -19,3 +23,5 @@ export default async function Main() {
     </ClientOnly>
   )
 }
+
+export default TournamentsPage;

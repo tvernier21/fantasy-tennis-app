@@ -4,6 +4,7 @@ from datetime import datetime
 from pymongo import MongoClient
 import os
 from dotenv import load_dotenv
+from bson import ObjectId
 
 load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
@@ -32,6 +33,7 @@ def valueErrorCheck(value):
         return None
 
 players = []
+players_elos = []
 for player in players_html:
     data = player.find_all("td")
 
@@ -40,26 +42,44 @@ for player in players_html:
     hard_elo = valueErrorCheck(data[9].text)
     clay_elo = valueErrorCheck(data[10].text)
     grass_elo = valueErrorCheck(data[11].text)
+
+    player_id = ObjectId()
+
     players.append({
+        "_id": player_id,
         "name": data[1].text.strip().replace("\xa0", " "),
         "age": age,
         "rank": int(data[0].text),
+        "elo": elo,
+        "createdAt": datetime.now(),
+        "updatedAt": datetime.now()
+    })
+    players_elos.append({
+        "playerId": player_id,
         "elo": [elo],
         "hard_elo": [hard_elo],
         "clay_elo": [clay_elo],
         "grass_elo": [grass_elo],
+        "dates": [datetime.now()],
         "createdAt": datetime.now(),
         "updatedAt": datetime.now()
     })
+
 
 # Connect to Database
 client = MongoClient(DATABASE_URL)
 db = client["test"]
 collection = db["Player"]
+collection.delete_many({})
 
 # Insert players into database
 # collection.delete_many({})
 result = collection.insert_many(players)
+print(result.acknowledged)
+print(len(result.inserted_ids))
+
+collection = db["PlayerElos"]
+result = collection.insert_many(players_elos)
 print(result.acknowledged)
 print(len(result.inserted_ids))
 

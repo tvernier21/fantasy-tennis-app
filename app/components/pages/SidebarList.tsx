@@ -11,10 +11,7 @@ interface SidebarListProps {
         name: string; 
         age: number | null; 
         rank: number; 
-        elo: number[]; 
-        hard_elo: number[]; 
-        clay_elo: number[]; 
-        grass_elo: number[]; 
+        elo: number; 
         createdAt: Date; 
         updatedAt: Date; 
     }[] | {
@@ -48,7 +45,8 @@ const SidebarList: React.FC<SidebarListProps> = ({
                             <SidebarItem 
                                 title={player.name}
                                 category={category}
-                                description={player.elo[0].toString()}
+                                description={player.rank.toString()}
+                                secondaryText={player.elo.toString()}
                                 selected={selected === player.name}
                                 showBookmark
                             />

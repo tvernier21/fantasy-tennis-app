@@ -27,6 +27,7 @@ model User {
   teams          Team[] 
 }
 
+
 model Account {
   id                String  @id @default(auto()) @map("_id") @db.ObjectId
   userId            String  @db.ObjectId
@@ -46,6 +47,7 @@ model Account {
   @@unique([provider, providerAccountId])
 }
 
+
 model League {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   adminId       String   @db.ObjectId
@@ -57,6 +59,7 @@ model League {
   admin         User     @relation(fields: [adminId], references: [id], onDelete: Cascade)
   teams         Team[]  
 }
+
 
 model Team {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
@@ -72,20 +75,35 @@ model Team {
   league        League?  @relation(fields: [leagueId], references: [id])
 }
 
+
 model Player {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   name          String
   age           Float?
   rank          Int
+  elo           Float
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  playerElos        PlayerElos[]
+  tournamentPlayers TournamentPlayer[]
+}
+
+
+model PlayerElos {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  playerId      String   @db.ObjectId
   elo           Float[]
   hard_elo      Float[]
   clay_elo      Float[]
   grass_elo     Float[]
+  dates         DateTime[] 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  tournamentPlayers TournamentPlayer[]
+  player        Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
 }
+
 
 model TournamentPlayer {
   id            String     @id @default(auto()) @map("_id") @db.ObjectId
@@ -104,6 +122,7 @@ model TournamentPlayer {
   teams         Team?      @relation(fields: [teamId], references: [id])
 }
 
+
 model Tournament {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   name          String
@@ -119,6 +138,7 @@ model Tournament {
   players       TournamentPlayer[]
   matches       Match[]
 }
+
 
 model Match {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
