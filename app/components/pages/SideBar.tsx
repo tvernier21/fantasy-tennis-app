@@ -21,7 +21,7 @@ interface SideBarProps {
         grass_elo: number[]; 
         createdAt: Date; 
         updatedAt: Date; 
-    }[] | null;
+    }[] | null | undefined;
     category?: string | null;
 }
 
@@ -35,7 +35,7 @@ const SideBar: React.FC<SideBarProps> = ({
 
     return (
         <div>
-            {category === 'Players' &&
+            {category === 'players' &&
                 <div className="w-full max-w-md">
                     <SidebarHeader category={category} />
                     <SidebarList data={data} category={category}/>

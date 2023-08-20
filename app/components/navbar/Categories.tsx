@@ -1,6 +1,6 @@
 'use client';
 
-import { usePathname, useSearchParams } from 'next/navigation';
+import { useSearchParams, usePathname } from 'next/navigation';
 
 import { TbTournament } from 'react-icons/tb';
 import { MdOutlinePersonSearch } from 'react-icons/md';
@@ -12,37 +12,32 @@ import CategoryBox from './CategoryBox';
 export const categories = [
     {
         label: 'Tournaments',
+        pathname: '/tournaments',
         icon: TbTournament,
         description: "List of tournaments"
     },
     {
         label: 'Players',
+        pathname: '/players',
         icon: MdOutlinePersonSearch,
         img: '/images/tennis-player-with-racket.png',
         description: "List of tournaments"
     },
-    {
-        label: 'Teams',
-        icon: RiTeamLine,
-        description: "List of tournaments"
-    },
+    // {
+    //     label: 'Teams',
+    //     icon: RiTeamLine,
+    //     description: "List of tournaments"
+    // },
     {
         label: 'Leagues',
+        pathname: '/leagues',
         icon: RiOrganizationChart,
         description: "List of tournaments"
     }
 ]
 
 const Categories = () => {
-    const params = useSearchParams();
-    const category = params?.get('category');
     const pathname = usePathname();
-
-    const isMainPage = pathname === '/';
-
-    if (!isMainPage) {
-        return null;
-    }
 
     return (
         <Container>
@@ -51,7 +46,8 @@ const Categories = () => {
                     <CategoryBox
                         key={item.label}
                         label={item.label}
-                        selected={category === item.label}
+                        pathname={item.pathname}
+                        selected={pathname === item.pathname}
                         icon={item.icon}
                     />
                 ))}

@@ -1,14 +1,14 @@
 'use client';
 
 import React from "react"
-import { useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
 import HomePage from "./HomePage"
 import SideBar from "./SideBar"
 import DataPage from "./DataPage"
 
 interface ContentsProps {
-    players?: {
+    data: {
         id: string; 
         name: string; 
         age: number | null; 
@@ -20,46 +20,15 @@ interface ContentsProps {
         createdAt: Date; 
         updatedAt: Date; 
     }[] | null | undefined;
-    tournaments?: null | undefined;
 }
 
 const Contents: React.FC<ContentsProps> = ({
-    players,
-    tournaments
+    data,
 }) => {
-    const params = useSearchParams();
-    const category = params?.get('category');
+    const pathname = usePathname();
+    const category = pathname ? pathname.split('/')[1] : null;
 
-    const [data, setData] = React.useState<null | {
-        id: string; 
-        name: string; 
-        age: number | null; 
-        rank: number; 
-        elo: number[]; 
-        hard_elo: number[]; 
-        clay_elo: number[]; 
-        grass_elo: number[]; 
-        createdAt: Date; 
-        updatedAt: Date; 
-    }[] | undefined>(null);;
-
-    React.useEffect(() => {
-        if (category === 'Players') {
-            setData(players);
-        } else if (category === 'Tournaments') {
-            setData(tournaments);
-        } else {
-            setData(null);
-        }
-    }, [category, players, tournaments]);
-  
-    if (!category) {
-        return (
-            <div className=" pt-3 h-full">
-                <HomePage />
-            </div>
-        )
-    }
+    const name = undefined;
 
     return (
         <div className="flex flex-col md:flex-row h-screen justify-center items-center"> {/* Added h-screen to fill height */}
@@ -68,7 +37,7 @@ const Contents: React.FC<ContentsProps> = ({
                     <SideBar data={data} category={category}/>
                 </div>
                 <div className="md:w-3/4 w-full h-screen bg-white rounded-r-xl"> {/* Added rounded right corner */}
-                    <DataPage />
+                    <DataPage category={category} name={name}/>
                 </div>
             </div>
         </div>

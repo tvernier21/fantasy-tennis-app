@@ -1,23 +1,15 @@
-import React, { useState } from "react"
-
-import getPlayers from "./actions/getPlayers"
-import getTournaments from "./actions/getTournaments"
+import React from "react"
 
 import ClientOnly from "./components/ClientOnly"
 import Container from "./components/Container"
 import HomePage from "./components/pages/HomePage"
-import Contents from "./components/pages/Contents"
 
-export default async function Main() {
-  const players = await getPlayers()
-  const tournaments = await getTournaments()
+export default function Page() {
 
   return (
     <ClientOnly>
       <Container>
-        <Contents 
-          players={players}
-        />
+        <HomePage />
       </Container>
     </ClientOnly>
   )

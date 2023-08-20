@@ -1,27 +1,70 @@
 'use client';
 
-import React from "react"
+import React, { useCallback } from "react"
+import {useSearchParams, usePathname, useRouter } from "next/navigation";
+import qs from "query-string";
 
 import BookmarkButton from "../BookmarkButton"
 import Thumbnail from "../Thumbnail"
+import path from "path";
 
 interface SidebarItemProps {
     title: string;
     description: string;
+    category: string;
+    selected: boolean;
     secondaryText?: string;
     img?: string | null | undefined;
+    showBookmark?: boolean;
     saved?: boolean;
 }
 
 const SidebarItem: React.FC<SidebarItemProps> = ({
     title,
     description,
+    selected,
     secondaryText,
     img,
-    saved
+    showBookmark,
 }) => {
+    const router = useRouter();
+    const pathname = usePathname();
+    const params = useSearchParams();
+
+    const handleClick = useCallback(() => {
+        let currentQuery = {};
+        let basePath = '/'
+        
+        if (params) {
+            currentQuery = qs.parse(params.toString())
+        }
+
+        if (pathname) {
+            basePath = pathname.split('/')[1]
+        }
+
+        const updatedQuery: any = {
+            ...currentQuery,
+            selected: title
+        }
+
+        const url = qs.stringifyUrl({
+            url: basePath,
+            query: updatedQuery
+        }, { skipNull: true });
+
+        router.push(url);
+    }, [title, router, params]);
+
     return (
-        <div className="rounded-xl w-full relative overflow-hidden bg-gray-100 p-3 hover:bg-gray-200 transition-colors duration-300">
+        <div 
+            className={`
+                rounded-xl w-full relative overflow-hidden bg-gray-100 p-3 cursor-pointer transition-colors duration-300
+                hover:shadow-md hover:bg-gray-200
+                ${selected ? 'bg-gray-200' : ''}
+            `}
+            onClick={handleClick}        
+        >
             <div className="flex items-center justify-between">
                 <div className="flex items-center">
                     <Thumbnail img={img} />
@@ -35,10 +78,10 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
                         </a>
                     </div>
                 </div>
-                <BookmarkButton />
+                {showBookmark && (
+                    <BookmarkButton saved={false}/>
+                )}
             </div>
-            {/* Uncomment the below line if you want to use the LikeButton */}
-            {/* <LikeButton saved={saved} /> */}
         </div>
     );  
 }

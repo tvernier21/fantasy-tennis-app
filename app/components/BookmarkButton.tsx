@@ -3,9 +3,14 @@
 import { BsBookmarkPlusFill, BsBookmarkPlus, BsBook } from "react-icons/bs";
 import React, { useState } from "react";
 
+interface BookmarkButtonProps {
+  saved?: boolean;
+}
 
-const BookmarkButton = () => {
-  const [isFavorited, setIsFavorited] = useState(false);
+const BookmarkButton: React.FC<BookmarkButtonProps> = ({
+  saved
+}) => {
+  const [isFavorited, setIsFavorited] = useState(saved);
 
   return (
     <div 

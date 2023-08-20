@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useSearchParams } from 'next/navigation';
 
 import SidebarItem from './SidebarItem';
 
@@ -24,16 +25,21 @@ const SidebarList: React.FC<SidebarListProps> = ({
     data,
     category
 }) => {
+    const params = useSearchParams();
+    const selected = params?.get('selected');
+    
     return (
         <div>
-            {category === 'Players' && (
+            {category === 'players' && (
                 <div>
                     {data?.map((player) => (
-                        <div className="mb-2 ml-2">
+                        <div className="mb-2 ml-2 mr-2" key={player.id}>
                             <SidebarItem 
-                                key={player.id}
                                 title={player.name}
+                                category={category}
                                 description={player.elo[0].toString()}
+                                selected={selected === player.name}
+                                showBookmark
                             />
                         </div>
                     ))}
