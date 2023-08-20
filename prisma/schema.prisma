@@ -108,7 +108,7 @@ model Tournament {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   name          String
   location      String
-  date          Int
+  date          String
   surface       String
   difficulty    Int
   img           String?

@@ -3,7 +3,7 @@ from datetime import datetime
 from pymongo import MongoClient
 import os
 from dotenv import load_dotenv
-
+# import time
 from initScraper import init_driver
 
 print("Starting")
@@ -44,7 +44,7 @@ for tournament in tournaments:
     if name == "Nitto ATP Finals" or name == "United Cup" or name == "Laver Cup":
         continue
     location = tournament.find("span", {"class": "tourney-location"}).text.strip()
-    date = tournament.find("span", {"class": "tourney-dates"}).text.strip()
+    date = str(tournament.find("span", {"class": "tourney-dates"}).text.strip())
     surface = tournament.find_all("td", {"class": "tourney-details"})[1].find("span").text.strip()
     img = "https://www.atptour.com/" + tournament.find("img")["src"]
     try:
@@ -77,6 +77,9 @@ print("Driver Closed")
 client = MongoClient(DATABASE_URL)
 db = client["test"]
 collection = db["Tournament"]
+
+# result = collection.delete_many({})
+# time.sleep(3)
 
 result = collection.insert_many(tournaments_data)
 print(result.acknowledged)

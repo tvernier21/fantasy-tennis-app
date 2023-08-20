@@ -21,6 +21,17 @@ interface SideBarProps {
         grass_elo: number[]; 
         createdAt: Date; 
         updatedAt: Date; 
+    }[] | {
+        id: string; 
+        name: string; 
+        location: string;
+        date: string;
+        surface: string;
+        difficulty: number;
+        img?: string | null | undefined;
+        link?: string | null | undefined;
+        createdAt: Date; 
+        updatedAt: Date; 
     }[] | null | undefined;
     category?: string | null;
 }
@@ -29,18 +40,14 @@ const SideBar: React.FC<SideBarProps> = ({
     data,
     category
 }) => {
-    const router = useRouter();
-
-    //push first item of data to url
+    console.log(data)
 
     return (
         <div>
-            {category === 'players' &&
-                <div className="w-full max-w-md">
-                    <SidebarHeader category={category} />
-                    <SidebarList data={data} category={category}/>
-                </div>
-            }
+            <div className="w-full max-w-md">
+                <SidebarHeader category={category} />
+                <SidebarList data={data} category={category}/>
+            </div>
         </div>
     )
 }  

@@ -19,6 +19,17 @@ interface ContentsProps {
         grass_elo: number[]; 
         createdAt: Date; 
         updatedAt: Date; 
+    }[] | {
+        id: string; 
+        name: string; 
+        location: string;
+        date: string;
+        surface: string;
+        difficulty: number;
+        img?: string | null | undefined;
+        link?: string | null | undefined;
+        createdAt: Date; 
+        updatedAt: Date; 
     }[] | null | undefined;
 }
 

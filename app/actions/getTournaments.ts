@@ -4,7 +4,7 @@ export default async function getTournaments() {
     try {
         const tournaments = await prisma.tournament.findMany({
             orderBy: {
-                name: 'asc'
+                createdAt: 'asc'
             },
         });
 
