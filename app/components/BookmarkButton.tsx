@@ -1,6 +1,6 @@
 'use client';
 
-import { BsBookmarkPlusFill, BsBookmarkPlus, BsBook } from "react-icons/bs";
+import { BsBookmarkPlusFill, BsBookmarkPlus } from "react-icons/bs";
 import React, { useState } from "react";
 
 interface BookmarkButtonProps {
@@ -18,14 +18,15 @@ const BookmarkButton: React.FC<BookmarkButtonProps> = ({
       className="relative hover:opacity-80 transition cursor-pointer"
     >
       <BsBookmarkPlus
-        size={28}
-        className="fill-white absolute -top-[2px] -right-[2px]"
+        size={29}
+        className="fill-white absolute -top-[2px] -right-[2.2px]"
       />
       <BsBookmarkPlusFill
         size={24}
-        className={
-          isFavorited ? 'fill-rose-500' : 'fill-neutral-500/70'
-        }
+        className={`
+          absolute -top-[0px] -right-[0px] transition
+          ${isFavorited ? 'fill-rose-500' : 'fill-neutral-500/70'}
+        `}
       />
     </div>
    );
