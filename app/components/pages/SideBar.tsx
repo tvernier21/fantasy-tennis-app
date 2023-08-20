@@ -3,10 +3,8 @@
 import React from 'react';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 
-import SidebarHeader from './SidebarHeader';
+import SidebarFilter from './SidebarFilter';
 import SidebarList from './SidebarList';
-import SidebarItem from './SidebarItem';
-import Heading from '../Heading';
 
 
 interface SideBarProps {
@@ -40,12 +38,12 @@ const SideBar: React.FC<SideBarProps> = ({
     data,
     category
 }) => {
-    console.log(data)
+    const numData = 5
 
     return (
         <div>
-            <div className="w-full max-w-md">
-                <SidebarHeader category={category} />
+            <div className="w-full max-w-md mb-2">
+                <SidebarFilter category={category} numData={numData} />
                 <SidebarList data={data} category={category}/>
             </div>
         </div>

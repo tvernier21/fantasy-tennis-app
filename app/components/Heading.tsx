@@ -2,7 +2,7 @@
 
 interface HeadingProps {
     title: string | null | undefined;
-    subtitle?: string;
+    subtitle?: string | null | undefined;
     center?: boolean;
 }
 

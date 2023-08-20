@@ -1,21 +1,27 @@
 'use client';
 
 import React from "react"
-import { usePathname, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
+
+import Heading from "../Heading";
 
 interface DataPageProps {
     category: string | null | undefined;
-    name: string | undefined;
 }
 
 const DataPage: React.FC<DataPageProps> = ({
-    name
+    category
 }) => {
     // Get the current path name and fetch corresponding player or tournament data
+    const params = useSearchParams();
+    const selected = params?.get("selected");
 
     return (
-        <div>
-            {name}
+        <div className="pt-22">
+            <Heading 
+                title={category}
+                subtitle={selected}
+            />
         </div>
     )
 }

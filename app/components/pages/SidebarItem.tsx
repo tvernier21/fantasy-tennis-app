@@ -6,7 +6,6 @@ import qs from "query-string";
 
 import BookmarkButton from "../BookmarkButton"
 import Thumbnail from "../Thumbnail"
-import path from "path";
 
 interface SidebarItemProps {
     title: string;
@@ -59,31 +58,40 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
     return (
         <div 
             className={`
-                rounded-xl w-full relative overflow-hidden bg-gray-100 p-3 cursor-pointer transition-colors duration-300
+                rounded-xl w-full h-32 relative overflow-hidden bg-gray-100 p-3 cursor-pointer transition-colors duration-300
                 hover:shadow-md hover:bg-gray-200
                 ${selected ? 'bg-gray-200' : ''}
             `}
             onClick={handleClick}        
         >
-            <div className="flex items-center justify-between">
-                <div className="flex items-center">
+            <div className="flex items-center justify-between h-full">
+                {/* Thumbnail */}
+                <div className="flex-shrink-0" style={{flexBasis: showBookmark ? '20%' : '33.33%'}}>
                     <Thumbnail img={img} />
-                    <div className="ml-4">
-                        <a href="#" className="block">
-                            <h3 className="text-xl font-semibold mb-2">{title}</h3>
-                            <p className="text-gray-600 mb-1">{description}</p>
-                            {secondaryText && 
-                                <p className="text-gray-500">{secondaryText}</p>
-                            }
-                        </a>
-                    </div>
                 </div>
+
+    
+                {/* Text */}
+                <div className="ml-4 overflow-hidden" style={{flexBasis: showBookmark ? '60%' : '66.66%'}}>
+                    <a href="#" className="block h-full overflow-y-auto">
+                        <h3 className="text-xl font-semibold mb-2 truncate">{title}</h3>
+                        <p className="text-gray-600 mb-1 truncate">{description}</p>
+                        {secondaryText && 
+                            <p className="text-gray-500 truncate">{secondaryText}</p>
+                        }
+                    </a>
+                </div>
+
+    
+                {/* Bookmark Button */}
                 {showBookmark && (
-                    <BookmarkButton saved={false}/>
+                    <div className="flex-shrink-0" style={{flexBasis: '20%'}}>
+                        <BookmarkButton saved={false}/>
+                    </div>
                 )}
             </div>
         </div>
-    );  
+    );    
 }
 
 export default SidebarItem;
