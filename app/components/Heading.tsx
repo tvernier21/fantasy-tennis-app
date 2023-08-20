@@ -1,7 +1,7 @@
 'use client';
 
 interface HeadingProps {
-    title: string;
+    title: string | null | undefined;
     subtitle?: string;
     center?: boolean;
 }

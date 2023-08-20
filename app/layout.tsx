@@ -28,7 +28,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className={font.className}>
+      <body className={`${font.className} tennis-ball-yellow`}>
         <ClientOnly>
           <ToasterProvider />
           <LoginModal />
@@ -37,7 +37,7 @@ export default async function RootLayout({
             currentUser={currentUser} 
           />
         </ClientOnly>
-        <div className="pb-4 pt-4">
+        <div className="pb-4">
           {children}
         </div>
       </body>

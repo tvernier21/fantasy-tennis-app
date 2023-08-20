@@ -11,7 +11,7 @@ const HomePage = () => {
     const registerModal = useRegisterModal();
 
     return (
-        <div className='pt-22'>
+        <div className='pt-12 pb-12 bg-white flex flex-col h-full'>
             <div className='flex flex-col justify-center'>
                 <Heading 
                     center
