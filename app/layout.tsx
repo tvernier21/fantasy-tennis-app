@@ -37,7 +37,7 @@ export default async function RootLayout({
             currentUser={currentUser} 
           />
         </ClientOnly>
-        <div className="pb-4">
+        <div className="pb-4 pt-4">
           {children}
         </div>
       </body>
