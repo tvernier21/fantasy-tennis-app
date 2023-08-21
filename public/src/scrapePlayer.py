@@ -2,9 +2,10 @@ from selenium import webdriver
 from bs4 import BeautifulSoup
 from datetime import datetime
 from pymongo import MongoClient
-import os
 from dotenv import load_dotenv
 from bson import ObjectId
+import os
+import re
 
 load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
@@ -32,22 +33,33 @@ def valueErrorCheck(value):
     except ValueError:
         return None
 
+def clean_text(text):
+    # Replace anything that isn't an alphabet with a space
+    cleaned = re.sub(r"[^a-zA-Z]", ' ', text)
+    # Replace multiple spaces with a single space
+    cleaned = re.sub(r"\s+", ' ', cleaned)
+    return cleaned.strip()
+
+
 players = []
 players_elos = []
 for player in players_html:
     data = player.find_all("td")
 
+    name = clean_text(data[1].a.get_text(strip=True))
     age = valueErrorCheck(data[2].text)
     elo = valueErrorCheck(data[3].text)
     hard_elo = valueErrorCheck(data[9].text)
     clay_elo = valueErrorCheck(data[10].text)
     grass_elo = valueErrorCheck(data[11].text)
 
+    print(name)
+
     player_id = ObjectId()
 
     players.append({
         "_id": player_id,
-        "name": data[1].text.strip().replace("\xa0", " "),
+        "name": name,
         "age": age,
         "rank": int(data[0].text),
         "elo": elo,
@@ -79,6 +91,7 @@ print(result.acknowledged)
 print(len(result.inserted_ids))
 
 collection = db["PlayerElos"]
+collection.delete_many({})
 result = collection.insert_many(players_elos)
 print(result.acknowledged)
 print(len(result.inserted_ids))
