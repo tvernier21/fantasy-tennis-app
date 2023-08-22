@@ -23,16 +23,21 @@ matches_db = db["Match"]
 matches_db.delete_many({})
 
 def formatScore(score):
-    raw_score = score
-    extra = ""
     if "W/O" in raw_score:
         return "(W/O)"
     
-    if "RET" in raw_score:
-        tmp = raw_score.split("(")
-        raw_score = tmp[0].strip()
-        extra = " (RET)"
+    final_score = ""
+    for s in score:
+        if s == "(W/O)":
+            final_score += s`
+        set_score = s.split("<sup>")[0]
+        tiebreak_score = s.split("<sup>")[1].split("</sup>")[0]
+        
+        if len(set_score)%2 == 0:
+            set_score = set_score[:len(set_score)//2] + "-" + set_score[len(set_score)//2:]
+        else:
 
+        
     final_score = ""
     i = 0
     while i < len(raw_score):
@@ -82,7 +87,8 @@ for tournament in tournaments:
             # Extract player names and score
             winner_name = winner_cell.a.get_text(strip=True)
             loser_name = loser_cell.a.get_text(strip=True)
-            score = formatScore(score_cell.a.get_text(strip=True))
+            score = score_cell.find('a', class_='not-in-system').get_text(strip=True, separator=' ').split()
+            score = formatScore(score)
 
             # Get player ids
             try:
