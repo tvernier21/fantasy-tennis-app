@@ -1,4 +1,4 @@
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Comment
 from datetime import datetime
 from pymongo import MongoClient
 from dotenv import load_dotenv
@@ -23,35 +23,55 @@ matches_db = db["Match"]
 matches_db.delete_many({})
 
 def formatScore(score):
-    if "W/O" in raw_score:
+    if "(W/O)" in score:
         return "(W/O)"
     
     final_score = ""
+    extra = ""
     for s in score:
-        if s == "(W/O)":
-            final_score += s`
-        set_score = s.split("<sup>")[0]
-        tiebreak_score = s.split("<sup>")[1].split("</sup>")[0]
-        
-        if len(set_score)%2 == 0:
-            set_score = set_score[:len(set_score)//2] + "-" + set_score[len(set_score)//2:]
+        tmp = s
+        if "<sup>" in tmp:
+            tmp = tmp.replace("<sup>", "").replace("</sup>", "")
+            final_score = final_score[:-1]
+            final_score += f'({tmp}) '
+            continue
+        if "(RET)" in tmp or "(DEF)" in tmp:
+            extra = "(RET)"
+            tmp = tmp.split(" ")[0].strip()
+            if tmp == "(RET)" or tmp == "(DEF)":
+                continue
+
+        set_score = tmp[:len(tmp)//2] + "-" + tmp[len(tmp)//2:]
+        if len(tmp)%2 == 1:
+            s1 = int(set_score.split("-")[0])
+            s2 = int(set_score.split("-")[1])
+            if abs(s1-s2) > 2:
+                set_score = tmp[:(len(tmp)//2)+1] + "-" + tmp[(len(tmp)//2)+1:]
+
+        final_score = final_score + set_score + " "
+    final_score = final_score + extra
+    return final_score.strip()
+
+def tag_content_to_list(tag):
+    parts = []
+    for child in tag.children:
+        # If it's a comment, skip
+        if isinstance(child, Comment):
+            continue
+        # If it's another tag, convert to string
+        elif child.name:
+            parts.append(str(child))
+        # Else, it's just text
         else:
+            stripped_text = child.strip()
+            if stripped_text:  # Make sure it's not an empty string
+                parts.append(stripped_text)
+    return parts
 
-        
-    final_score = ""
-    i = 0
-    while i < len(raw_score):
-        skip = 2
-        set = raw_score[i] + "-" + raw_score[i+1]
-        if set == "7-6" or set == "6-7":
-            set = set + "(" + raw_score[i+2] + ")"
-            skip = 3
-        final_score = final_score + set + " "
-        i = i + skip
-    return final_score.strip() + extra
-
-
-tournaments = list(tournaments_db.find({}, {"_id": 1, "link": 1, "date": 1}))
+# find tournaments from db that are difficulty > 1 and past a certain date
+tournaments = tournaments_db.find({"difficulty": {"$gt": 1}, "date": {"$gt": datetime(2010, 1, 1)}},
+                                  {"_id": 1, "link": 1, "date": 1})
+# tournaments = list(tournaments_db.find({}, {"_id": 1, "link": 1, "date": 1}))
 for tournament in tournaments:
     matches = []
     t_id, t_link, t_date = tournament["_id"], tournament["link"], tournament["date"]
@@ -85,20 +105,29 @@ for tournament in tournaments:
             score_cell = row.find('td', class_='day-table-score')
             
             # Extract player names and score
-            winner_name = winner_cell.a.get_text(strip=True)
+            try:
+                winner_name = winner_cell.a.get_text(strip=True)
+            except:
+                continue
+            try:
+                loser_name = loser_cell.a.get_text(strip=True)
+            except:
+                continue
             loser_name = loser_cell.a.get_text(strip=True)
-            score = score_cell.find('a', class_='not-in-system').get_text(strip=True, separator=' ').split()
-            score = formatScore(score)
+            score = formatScore(tag_content_to_list(score_cell.find('a')))
 
             # Get player ids
+            new_player = False
             try:
                 winner_id = players_db.find_one({"name": loser_name})["_id"]
             except:
                 winner_id = insertNewPlayer(players_db, winner_name, winner_cell.a["href"], t_date)
+                new_player = True
             try:
                 loser_id = players_db.find_one({"name": loser_name})["_id"]
             except:
                 loser_id = insertNewPlayer(players_db, loser_name, loser_cell.a["href"], t_date)
+                new_player = True
 
             match_data = {
                 'winnerId': winner_id,
@@ -112,8 +141,11 @@ for tournament in tournaments:
                 'createdAt': datetime.now(),
                 'updatedAt': datetime.now()
             }
-            print(f"    Inserted {winner_name} vs {loser_name} - ({score})")
             matches.append(match_data)
+            print_string = f"    Inserted {winner_name} vs {loser_name} - ({score})"
+            if new_player:
+                print_string += " + New Player"
+            print(print_string)
             
             
 
