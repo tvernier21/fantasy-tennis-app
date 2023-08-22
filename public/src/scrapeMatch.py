@@ -20,7 +20,7 @@ tournaments_db = db["Tournament"]
 players_db = db["Player"]
 matches_db = db["Match"]
 
-matches_db.delete_many({})
+# matches_db.delete_many({})
 
 def formatScore(score):
     if "(W/O)" in score:
@@ -69,9 +69,10 @@ def tag_content_to_list(tag):
     return parts
 
 # find tournaments from db that are difficulty > 1 and past a certain date
-tournaments = tournaments_db.find({"difficulty": {"$gt": 1}, "date": {"$gt": datetime(2010, 1, 1)}},
+tournaments = tournaments_db.find({"difficulty": {"$gt": 1}, "date": {"$gt": datetime(2020, 1, 1)}},
                                   {"_id": 1, "link": 1, "date": 1})
-# tournaments = list(tournaments_db.find({}, {"_id": 1, "link": 1, "date": 1}))
+
+tournaments = list(tournaments)
 for tournament in tournaments:
     matches = []
     t_id, t_link, t_date = tournament["_id"], tournament["link"], tournament["date"]
@@ -91,6 +92,9 @@ for tournament in tournaments:
     # Get Each Tournament
     soup = BeautifulSoup(driver.page_source, "html.parser")
     tournament_soup = soup.find("table", {"class": "day-table"})
+
+    if tournament_soup is None:
+        continue
     
     theads = tournament_soup.find_all("thead")
     tbodys = tournament_soup.find_all("tbody")
@@ -108,7 +112,7 @@ for tournament in tournaments:
             try:
                 winner_name = winner_cell.a.get_text(strip=True)
             except:
-                continue
+                continue # Bye Round
             try:
                 loser_name = loser_cell.a.get_text(strip=True)
             except:
@@ -119,7 +123,7 @@ for tournament in tournaments:
             # Get player ids
             new_player = False
             try:
-                winner_id = players_db.find_one({"name": loser_name})["_id"]
+                winner_id = players_db.find_one({"name": winner_name})["_id"]
             except:
                 winner_id = insertNewPlayer(players_db, winner_name, winner_cell.a["href"], t_date)
                 new_player = True
@@ -152,7 +156,7 @@ for tournament in tournaments:
     driver.quit()
     matches_db.insert_many(matches)
     time.sleep(random.randint(1, 2))
-    
+
 
 client.close()
 print("Client Closed")
