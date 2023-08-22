@@ -21,11 +21,18 @@ export default async function getTournaments (
                 }
             }
         }
+        query = {
+            ...query,
+            date: {
+                // greater than 2021-01-01
+                gt: new Date('2021-01-01')
+            }
+        }
 
         const tournaments = await prisma.tournament.findMany({
             where: query,
             orderBy: {
-                createdAt: 'asc'
+                createdAt: 'desc'
             },
         });
 

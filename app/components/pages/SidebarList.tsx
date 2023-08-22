@@ -61,7 +61,7 @@ const SidebarList: React.FC<SidebarListProps> = ({
                             <SidebarItem 
                                 title={tournament.name}
                                 category={category}
-                                description={tournament.date}
+                                description={tournament.date.toLocaleDateString()}
                                 secondaryText={tournament.location}
                                 selected={selected === tournament.name}
                                 img={tournament.img}

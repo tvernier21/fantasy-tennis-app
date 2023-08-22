@@ -68,25 +68,31 @@ model Team {
   points        Float    @default(0)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
-  leagueId      String?  @db.ObjectId
+  leagueId      String  @db.ObjectId
 
-  players       TournamentPlayer[]
+  players       Player[]
   user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  league        League?  @relation(fields: [leagueId], references: [id])
+  league        League   @relation(fields: [leagueId], references: [id])
 }
 
 
 model Player {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
   name          String
   age           Float?
   rank          Int
   elo           Float
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  isActive      Boolean
+  lastMatch     DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  teamId        String?   @db.ObjectId
 
-  playerElos        PlayerElos[]
-  tournamentPlayers TournamentPlayer[]
+  matchesWon    Match[]  @relation("winner")
+  matchesLost   Match[]  @relation("loser")
+  playerElos    PlayerElos[]
+  teams         Team?    @relation(fields: [teamId], references: [id])
+  // tournamentPlayers TournamentPlayer[]
 }
 
 
@@ -105,29 +111,29 @@ model PlayerElos {
 }
 
 
-model TournamentPlayer {
-  id            String     @id @default(auto()) @map("_id") @db.ObjectId
-  playerId      String     @db.ObjectId
-  tournamentId  String     @db.ObjectId
-  elo           Float
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
+// model TournamentPlayer {
+//   id            String     @id @default(auto()) @map("_id") @db.ObjectId
+//   playerId      String     @db.ObjectId
+//   tournamentId  String     @db.ObjectId
+//   elo           Float
+//   createdAt     DateTime   @default(now())
+//   updatedAt     DateTime   @updatedAt
 
-  player        Player     @relation(fields: [playerId], references: [id], onDelete: Cascade)
-  tournament    Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
-  matchesWon    Match[]    @relation("winner")
-  matchesLost   Match[]    @relation("loser")
+//   player        Player     @relation(fields: [playerId], references: [id], onDelete: Cascade)
+//   tournament    Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+//   matchesWon    Match[]    @relation("winner")
+//   matchesLost   Match[]    @relation("loser")
   
-  teamId        String?    @db.ObjectId
-  teams         Team?      @relation(fields: [teamId], references: [id])
-}
+//   teamId        String?    @db.ObjectId
+//   teams         Team?      @relation(fields: [teamId], references: [id])
+// }
 
 
 model Tournament {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   name          String
   location      String
-  date          String
+  date          DateTime
   surface       String
   difficulty    Int
   img           String?
@@ -135,7 +141,7 @@ model Tournament {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  players       TournamentPlayer[]
+  // players       TournamentPlayer[]
   matches       Match[]
 }
 
@@ -145,12 +151,14 @@ model Match {
   winnerId      String   @db.ObjectId
   loserId       String   @db.ObjectId
   tournamentId  String   @db.ObjectId
+  winnerName    String
+  loserName     String
   round         String
   score         String
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  winner        TournamentPlayer @relation("winner", fields: [winnerId], references: [id], onDelete: Cascade)
-  loser         TournamentPlayer @relation("loser", fields: [loserId], references: [id], onDelete: Cascade)
-  tournament    Tournament       @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  winner        Player     @relation("winner", fields: [winnerId], references: [id], onDelete: Cascade)
+  loser         Player     @relation("loser", fields: [loserId], references: [id], onDelete: Cascade)
+  tournament    Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
 }

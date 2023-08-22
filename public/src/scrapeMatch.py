@@ -19,24 +19,14 @@ db = client["test"]
 #database
 tournaments_db = db["Tournament"]
 players_db = db["Player"]
-
-players = list(players_db.find({}, {"_id": 1, "name": 1}))
-player_names = [player["name"] for player in players]
-
-def clean_text(text):
-    # Replace anything that isn't an alphabet with a space
-    cleaned = re.sub(r"[^a-zA-Z]", ' ', text)
-    # Replace multiple spaces with a single space
-    cleaned = re.sub(r"\s+", ' ', cleaned)
-    return cleaned.strip()
+matches_db = db["Match"]
 
 
-matches = []
 tournaments = list(tournaments_db.find({}, {"_id": 1, "link": 1}))
 for tournament in tournaments:
+    matches = []
     t_id, t_link = tournament["_id"], tournament["link"]
 
-    print(t_link)
     if not t_link:
         continue
 
