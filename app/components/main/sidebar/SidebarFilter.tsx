@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 
-import Heading from '../Heading';
+import Heading from '../../Heading';
 import PlayersFilter from './PlayersFilter';
 import TournamentsFilter from './TournamentsFilter';
 

@@ -2,7 +2,7 @@ import React from "react"
 
 import ClientOnly from "./components/ClientOnly"
 import Container from "./components/Container"
-import HomePage from "./components/pages/HomePage"
+import HomePage from "./components/main/HomePage"
 
 export default function Page() {
 

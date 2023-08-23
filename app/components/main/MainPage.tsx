@@ -4,10 +4,10 @@ import React from "react"
 import { usePathname } from 'next/navigation';
 
 import HomePage from "./HomePage"
-import SideBar from "./SideBar"
-import DataPage from "./DataPage"
+import SideBar from "./sidebar/SideBar"
+import Content from "./content/Contents"
 
-interface ContentsProps {
+interface MainPageProps {
     data: {
         id: string; 
         name: string; 
@@ -16,21 +16,20 @@ interface ContentsProps {
         elo: number; 
         createdAt: Date; 
         updatedAt: Date; 
-    }[] | {
+    }[] | { 
         id: string; 
         name: string; 
-        location: string;
-        date: string;
-        surface: string;
-        difficulty: number;
-        img?: string | null | undefined;
-        link?: string | null | undefined;
+        location: string; 
+        date: Date; 
+        surface: string; 
+        difficulty: number; 
+        img: string | null; 
+        link: string | null; 
         createdAt: Date; 
-        updatedAt: Date; 
-    }[] | null | undefined;
+        updatedAt: Date; }[]
 }
 
-const Contents: React.FC<ContentsProps> = ({
+const MainPage: React.FC<MainPageProps> = ({
     data,
 }) => {
     const pathname = usePathname();
@@ -43,11 +42,11 @@ const Contents: React.FC<ContentsProps> = ({
                     <SideBar data={data} category={category}/>
                 </div>
                 <div className="md:w-3/4 w-full h-screen bg-white rounded-r-xl"> {/* Added rounded right corner */}
-                    <DataPage category={category}/>
+                    <Content category={category}/>
                 </div>
             </div>
         </div>
     )   
 }
 
-export default Contents;
+export default MainPage;

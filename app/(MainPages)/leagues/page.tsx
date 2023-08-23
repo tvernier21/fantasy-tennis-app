@@ -4,7 +4,7 @@ import getPlayers from "../../actions/getPlayers"
 
 import ClientOnly from "../../components/ClientOnly"
 import Container from "../../components/Container"
-import Contents from "../../components/pages/Contents"
+import MainPage from "../../components/main/MainPage"
 
 export default async function Main() {
   const players = await getPlayers()
@@ -12,7 +12,7 @@ export default async function Main() {
   return (
     <ClientOnly>
       <Container>
-        <Contents 
+        <MainPage 
           data={players}
         />
       </Container>

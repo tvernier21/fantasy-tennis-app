@@ -16,18 +16,17 @@ interface SideBarProps {
         elo: number;
         createdAt: Date; 
         updatedAt: Date; 
-    }[] | {
+    }[] | { 
         id: string; 
         name: string; 
-        location: string;
-        date: string;
-        surface: string;
+        location: string; 
+        date: Date; 
+        surface: string; 
         difficulty: number;
-        img?: string | null | undefined;
-        link?: string | null | undefined;
+        img: string | null; 
+        link: string | null; 
         createdAt: Date; 
-        updatedAt: Date; 
-    }[] | null | undefined;
+        updatedAt: Date; }[] | null | undefined;
     category?: string | null;
 }
 

@@ -154,8 +154,8 @@ model Match {
   winnerId      String   @db.ObjectId
   loserId       String   @db.ObjectId
   tournamentId  String   @db.ObjectId
-  winnerName    String
-  loserName     String
+  winner_name    String
+  loser_name     String
   round         String
   score         String
   date          DateTime

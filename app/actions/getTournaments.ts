@@ -25,7 +25,8 @@ export default async function getTournaments (
             ...query,
             date: {
                 // greater than 2021-01-01
-                gt: new Date('2021-01-01')
+                gt: new Date('2023-01-01'),
+                lt: new Date('2023-08-20')
             }
         }
 
@@ -34,6 +35,7 @@ export default async function getTournaments (
             orderBy: {
                 createdAt: 'desc'
             },
+            take: 100
         });
 
         return tournaments;

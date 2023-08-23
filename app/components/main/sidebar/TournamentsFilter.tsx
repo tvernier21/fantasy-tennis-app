@@ -4,7 +4,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import qs from 'query-string';
 
-import MultiRangeSlider from '../Inputs/MultiRangeSlider';
+import MultiRangeSlider from '../../Inputs/MultiRangeSlider';
 
 const TournamentsFilter = () => {
 

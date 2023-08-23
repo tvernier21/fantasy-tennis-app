@@ -4,8 +4,8 @@ import React, { useCallback } from "react"
 import {useSearchParams, usePathname, useRouter } from "next/navigation";
 import qs from "query-string";
 
-import BookmarkButton from "../BookmarkButton"
-import Thumbnail from "../Thumbnail"
+import BookmarkButton from "../../BookmarkButton"
+import Thumbnail from "../../Thumbnail"
 
 interface SidebarItemProps {
     title: string;

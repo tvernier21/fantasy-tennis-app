@@ -38,6 +38,7 @@ export default async function getPlayers(
             orderBy: {
                 lastMatch: 'desc'
             },
+            take: 100
         });
 
         return players;

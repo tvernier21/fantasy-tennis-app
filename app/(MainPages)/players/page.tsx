@@ -4,7 +4,7 @@ import getPlayers, { PlayersParams } from "../../actions/getPlayers"
 
 import ClientOnly from "../../components/ClientOnly"
 import Container from "../../components/Container"
-import Contents from "../../components/pages/Contents"
+import MainPage from "../../components/main/MainPage"
 
 interface PlayersPageProps {
   searchParams: PlayersParams
@@ -16,7 +16,7 @@ const PlayersPage = async ({ searchParams }: PlayersPageProps) => {
   return (
     <ClientOnly>
       <Container>
-        <Contents 
+        <MainPage 
           data={players}
         />
       </Container>
