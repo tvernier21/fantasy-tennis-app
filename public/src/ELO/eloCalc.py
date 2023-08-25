@@ -8,19 +8,18 @@ import math
 import re
 
 # Declaring constants
-K = {
-    "sub-1700": 32,
-    "1700-2000": 20,
-    "above-2000": 10,
-}
+# K = {
+#     "sub-1700": 40,
+#     "1700-2000": 20,
+#     "above-2000": 10,
+# }
 
-def result(score_str):
+def result(score_str, isFiveSet):
     # Returns a number between 0 and 1 that represents how close the match was
     # 0 means it was a blowout, 1 means it was a close match
     # score is a string of the score of the match
-    penalty = False
-    if "(RET)" in score_str or "(DEF)" in score_str:
-        penalty = True
+    if "(RET)" in score_str or "(DEF)" in score_str or "(W/O)" in score_str:
+        return -1
 
     score = re.sub(r'\(.*?\)', '', score_str).strip().split(" ")
     
@@ -37,15 +36,24 @@ def result(score_str):
         else:
             loser_sets += 1
 
-    set_ratio = 1 - (loser_sets / (winner_sets + loser_sets))
+    set_ratio = 1
+    extra_correction = 1
+    if isFiveSet and loser_sets == 2:
+        set_ratio = .7
+    elif isFiveSet and loser_sets == 1:
+        set_ratio = .9
+        extra_correction = .8
+    elif not isFiveSet and loser_sets == 1:
+        set_ratio = .75
     game_ratio = (loser_games / (winner_games + loser_games))
 
-    correction = (set_ratio - .5) * (game_ratio / .6)
-    actual =  set_ratio - correction
-    # print(f"set ratio: {set_ratio}")
-    # print(f"game ratio: {game_ratio}")
-    # print(f"actual: {actual}")
-    return actual, penalty
+    # The most amount of games the loser can get is approx .6 of the total games
+    # set_ratio can be .5 to 1, but really can only be .6, 66, .75 or 1
+    # subtract from set ratio, up to .5, by the ratio of games the loser got
+    # over the maximum amount of games the loser could have gotten
+    correction = (set_ratio - .5) * (game_ratio / .6) * extra_correction
+    result =  set_ratio - correction
+    return result
 
 
 def expectedFiveSet(p3):
@@ -68,22 +76,49 @@ def expected(elo1, elo2, isFiveSet=False):
     return odds
 
 
-def eloChange(elo1, elo2, score_str, isFiveSet=False):
-    player1_K = K["sub-1700"] if elo1 <= 1700 else K["above-2000"] if (elo1 >= 2000) else K["1700-2000"]
-    player2_K = K["sub-1700"] if elo2 <= 1700 else K["above-2000"] if (elo2 >= 2000) else K["1700-2000"]
-    expectedScore = expected(elo1, elo2, isFiveSet)
-    actual, default = result(score_str)
-    if default:
-        player1_K = player1_K / 2
-        player2_K = player2_K / 2
+def kFactorAdjustment(k, elo, difficulty):
+    # Returns the k factor based on the elo of the player
+    adj = 1 + (18 / (1 + 2**((elo - 1500) / 63)))
+    tournament_adj = .8
+    if difficulty == 4:
+        tournament_adj = .9
+    elif difficulty == 5:
+        tournament_adj = 1
+    return k * adj * tournament_adj
 
-    player1_change = player1_K * (actual - expectedScore)
-    player2_change = player2_K * (1 - actual - (1 - expectedScore))
+
+def eloChange(elo1, elo2, score_str, isFiveSet=False):
+    expectedScore = expected(elo1, elo2, isFiveSet)
+    matchResult = result(score_str, isFiveSet)
+    if matchResult == -1:
+        return 0, 0
+    player1_K = kFactorAdjustment(32, elo1, isFiveSet)
+    player2_K = kFactorAdjustment(32, elo2, isFiveSet)
+
+    player1_change = player1_K * (matchResult - expectedScore)
+    player2_change = player2_K * (1 - matchResult - (1 - expectedScore))
 
     return player1_change, player2_change
 
 
+def absencePenalty(elo, match_date, last_match_date):
+    adjustment = 0
+    elo_adjust = 1
+    if last_match_date is not None:
+        months = (match_date - last_match_date).days / 30.436875
+        if months >= 9:
+            adjustment = 250
+        elif months >= 6:
+            adjustment = 150
+        elif months >= 3:
+            adjustment = 100
 
+    if elo >= 2000:
+        elo_adjust = .5
+    elif elo >= 1700:
+        elo_adjust = .75
+
+    return elo - (adjustment * elo_adjust)
 
 
 if __name__ == "__main__":

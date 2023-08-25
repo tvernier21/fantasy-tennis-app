@@ -84,8 +84,14 @@ model Player {
   height        String?
   rank          Int
   elo           Float
+  yelo          Float?
+  fiveSetElo    Float?
+  hard_elo      Float?
+  clay_elo      Float?
+  grass_elo     Float?
   isActive      Boolean
   lastMatch     DateTime?
+  numMatches    Int?
   img           String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -98,14 +104,15 @@ model Player {
   // tournamentPlayers TournamentPlayer[]
 }
 
-
 model PlayerElos {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   playerId      String   @db.ObjectId
   elo           Float[]
+  yelo          Float[]
   hard_elo      Float[]
   clay_elo      Float[]
   grass_elo     Float[]
+  timeOff       Int?
   dates         DateTime[] 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -154,8 +161,8 @@ model Match {
   winnerId      String   @db.ObjectId
   loserId       String   @db.ObjectId
   tournamentId  String   @db.ObjectId
-  winner_name    String
-  loser_name     String
+  winner_name   String
+  loser_name    String
   round         String
   score         String
   date          DateTime

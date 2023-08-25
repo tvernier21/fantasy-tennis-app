@@ -79,6 +79,7 @@ def insertNewPlayer(collection, name, URL, t_date=None):
             "elo": 1300,
             "isActive": active,
             "lastMatch": last_match_date,
+            "img": img,
             "createdAt": datetime.now(),
             "updatedAt": datetime.now()
         }
@@ -109,8 +110,9 @@ if __name__ == "__main__":
     client = MongoClient(DATABASE_URL)
     db = client["test"]
     collection = db["Player"]
-    collection.delete_many({})
+    # collection.delete_many({})
     # insertNewPlayer(collection, "Pierre-Hugues Herbert", "/en/players/pierre-hugues-herbert/h996/overview")
     # insertNewPlayer(collection, "Ivan Ljubicic", "/en/players/ivan-ljubicic/l360/overview")
-
+    # newId = insertNewPlayer(collection, "Derek Pham", "/en/players/derek-pham/p0kj/overview")
+    # print(newId)
     client.close()
