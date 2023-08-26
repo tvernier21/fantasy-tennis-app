@@ -1,4 +1,5 @@
 import prisma from "@/app/libs/prismadb";
+import { addYears } from "date-fns";
 
 export interface PlayersParams {
     eloMin?: number;
@@ -23,12 +24,17 @@ export default async function getPlayers(
                 }
             }
         }
+
         if (ageMin && ageMax) {
+            const currentDate = new Date();
+            const maxDOB = addYears(currentDate, -ageMin); // The latest DOB for the minimum age
+            const minDOB = addYears(currentDate, -ageMax); // The earliest DOB for the maximum age
+
             query = {
                 ...query,
-                age: {
-                    gte: +ageMin,
-                    lte: +ageMax
+                dob: {
+                    gte: minDOB,
+                    lte: maxDOB
                 }
             }
         }

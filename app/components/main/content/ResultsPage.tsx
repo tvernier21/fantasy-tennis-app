@@ -13,7 +13,8 @@ import {
     TableCell, 
     Pagination, 
     getKeyValue, 
-    Spinner
+    Spinner,
+    Chip
 } from "@nextui-org/react";
 
 
@@ -58,20 +59,21 @@ const MatchesPage: React.FC<MatchesPageProps> = ({
             .finally(() => {
                 setIsLoading(false);
             });
-    }, [selected, category]);    
+    }, [selected, category]);
 
+    // if (category === "tournaments") {
+    let [page, setPage] = React.useState(1);
+    let rowsPerPage = 25;
 
-    const [page, setPage] = React.useState(1);
-    const rowsPerPage = 28;
+    let pages = (matches ? Math.ceil(matches.length / rowsPerPage) : 0);
 
-    const pages = (matches ? Math.ceil(matches.length / rowsPerPage) : 0);
-
-    const items = React.useMemo(() => {
+    let items = React.useMemo(() => {
         const start = (page - 1) * rowsPerPage;
         const end = start + rowsPerPage;
 
         return (matches ? matches.slice(start, end) : []);
     }, [page, matches]);
+    // }
 
     return(
         <Table 
@@ -94,6 +96,7 @@ const MatchesPage: React.FC<MatchesPageProps> = ({
             }}
         >
             <TableHeader>
+                <TableColumn key="tournamentName" align='start'>Tournament</TableColumn>
                 <TableColumn key="round" align='start'>Round</TableColumn>
                 <TableColumn key="winner_name" align='start'>Winner</TableColumn>
                 <TableColumn key="loser_name" align='start'>Loser</TableColumn>
@@ -106,7 +109,19 @@ const MatchesPage: React.FC<MatchesPageProps> = ({
             >
                 {(item) => (
                     <TableRow key={item.id}>
-                        {(columnKey) => <TableCell>{getKeyValue(item, columnKey)}</TableCell>}
+                        {(columnKey) => <TableCell>
+                                            {columnKey === 'winner_name' && item.winnerId === selected ? (
+                                                <Chip color="primary" size="sm">
+                                                    {getKeyValue(item, columnKey)}
+                                                </Chip>
+                                            ) : columnKey === 'loser_name' && item.loserId === selected ? (
+                                                <Chip color="danger" size="sm">
+                                                    {getKeyValue(item, columnKey)}
+                                                </Chip>
+                                            ) : (
+                                                getKeyValue(item, columnKey)
+                                            )}
+                                        </TableCell>}
                     </TableRow>
                 )}
             </TableBody>
