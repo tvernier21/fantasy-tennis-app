@@ -25,9 +25,9 @@ const CategoryBox: React.FC<CategoryBoxProps> = ({
     return (
         <div 
             className={`
-                flex flex-col items-center justify-center gap-3 p-4 border-p-3 hover:text-neutral-800 transition cursor-pointer
-                ${selected ? "border-b-neutral-800" : "text-neutral-500"}
-                ${selected ? "text-neutral-800" : "text-neutral-500"}
+                flex flex-col items-center justify-center gap-3 p-4 border-p-3 hover:text-neutral-300 transition cursor-pointer
+                ${selected ? "border-b-neutral-200" : "text-neutral-500"}
+                ${selected ? "text-white" : "text-neutral-400"}
             `}
             onClick={() => router.push(pathname)}
         >   

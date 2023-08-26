@@ -6,27 +6,10 @@ import { useSearchParams } from 'next/navigation';
 import SidebarItem from './SidebarItem';
 
 interface SidebarListProps {
-    data?: {
-        id: string; 
-        name: string; 
-        age: number | null; 
-        rank: number; 
-        elo: number; 
-        createdAt: Date; 
-        updatedAt: Date; 
-    }[] | { 
-        id: string; 
-        name: string; 
-        location: string; 
-        date: Date; 
-        surface: string; 
-        difficulty: number; 
-        img: string | null; 
-        link: string | null; 
-        createdAt: Date; 
-        updatedAt: Date; }[] | null | undefined;
+    data: any;
     category?: string | null;
 }
+
 
 const SidebarList: React.FC<SidebarListProps> = ({
     data,
@@ -39,9 +22,10 @@ const SidebarList: React.FC<SidebarListProps> = ({
         <div>
             {category === 'players' && (
                 <div>
-                    {data?.map((player) => (
-                        <div className="mb-2 ml-2 mr-2" key={player.id}>
+                    {data?.map((player, i) => (
+                        <div className="mb-2 ml-2 mr-2" key={i}>
                             <SidebarItem 
+                                id={player.id}
                                 title={player.name}
                                 category={category}
                                 description={player.rank.toString()}
@@ -55,9 +39,10 @@ const SidebarList: React.FC<SidebarListProps> = ({
             )}
             {category === 'tournaments' && (
                 <div>
-                    {data?.map((tournament) => (
-                        <div className="mb-2 ml-2 mr-2" key={tournament.id}>
+                    {data?.map((tournament, i) => (
+                        <div className="mb-2 ml-2 mr-2" key={i}>
                             <SidebarItem 
+                                id={tournament.id}
                                 title={tournament.name}
                                 category={category}
                                 description={tournament.date.toLocaleDateString()}
@@ -71,6 +56,6 @@ const SidebarList: React.FC<SidebarListProps> = ({
             )}
         </div>
     )
-}
+};
 
 export default SidebarList;

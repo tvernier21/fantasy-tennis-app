@@ -8,6 +8,7 @@ import BookmarkButton from "../../BookmarkButton"
 import Thumbnail from "../../Thumbnail"
 
 interface SidebarItemProps {
+    id: string;
     title: string;
     description: string;
     category: string;
@@ -19,6 +20,7 @@ interface SidebarItemProps {
 }
 
 const SidebarItem: React.FC<SidebarItemProps> = ({
+    id,
     title,
     description,
     selected,
@@ -44,7 +46,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
 
         const updatedQuery: any = {
             ...currentQuery,
-            selected: title
+            selected: id
         }
 
         const url = qs.stringifyUrl({
@@ -53,14 +55,14 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         }, { skipNull: true });
 
         router.push(url);
-    }, [title, router, params]);
+    }, [id, router, params]);
 
     return (
         <div 
             className={`
-                rounded-xl w-full h-32 relative overflow-hidden bg-gray-100 p-3 cursor-pointer transition-colors duration-300
-                hover:shadow-md hover:bg-gray-200
-                ${selected ? 'bg-neutral-500/50' : ''}
+                rounded-xl w-full h-32 relative overflow-hidden bg-gray-400 p-3 cursor-pointer transition-colors duration-300
+                hover:shadow-md hover:bg-gray-300
+                ${selected ? 'bg-gray-300' : 'bg-gray-400'}
             `}
             onClick={handleClick}        
         >
@@ -74,10 +76,10 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
                 {/* Text */}
                 <div className="ml-4 overflow-hidden" style={{flexBasis: showBookmark ? '60%' : '80%'}}>
                     <a href="#" className="block h-full overflow-y-auto">
-                        <h3 className="text-xl font-semibold mb-2 truncate">{title}</h3>
+                        <h3 className="text-xl text-gray-600 font-semibold mb-2 truncate">{title}</h3>
                         <p className="text-gray-600 mb-1 truncate">{description}</p>
                         {secondaryText && 
-                            <p className="text-gray-500 truncate">{secondaryText}</p>
+                            <p className="text-gray-600 truncate">{secondaryText}</p>
                         }
                     </a>
                 </div>

@@ -1,81 +1,119 @@
 'use client';
 
-import React from "react"
-import { 
-    Tabs,
-    TabsHeader,
-    TabsBody,
-    Tab,
-    TabPanel,
-} from "@material-tailwind/react";
+import React, { useEffect, useState } from "react"
+import { useElementSize } from 'usehooks-ts'
+
+import {Tabs, Tab, Card, CardBody, CardHeader} from "@nextui-org/react";
+
+import EmptyState from "../../EmptyState";
+import ResultsPage from "./ResultsPage";
 
 interface DataPageProps {
-    sumting?: any;
-}
+    category: string | null | undefined;
+    // add more data once its ready
+};
+
+export const playerTabs = [
+    {
+        id: "results",
+        value: "results",
+        desc: `It really matters and then like it really doesn't matter.
+        What matters is the people who are sparked by it. And the people 
+        who are like offended by it, it doesn't matter.`,
+      },
+      {
+        id: "elo",
+        value: "elo",
+        desc: `We are still working on making this feature available`,
+      },
+];
+
+export const tournamentTabs = [
+    {
+        id: "results",
+        value: "Results",
+        desc: `It really matters and then like it really doesn't matter.
+        What matters is the people who are sparked by it. And the people 
+        who are like offended by it, it doesn't matter.`,
+      },
+      {
+        id: "draws",
+        value: "draws",
+        desc: `We are still working on making this feature available`,
+      },
+      {
+        id: "live scores",
+        value: "live scores",
+        desc: `We are still working on making this feature available.`,
+      }
+];
+
 
 const DataPage: React.FC<DataPageProps> = ({
-    sumting
+    category
 }) => {
-    const [activeTab, setActiveTab] = React.useState("results");
-    const data = [
-        {
-          label: "results",
-          value: "results",
-          desc: `It really matters and then like it really doesn't matter.
-          What matters is the people who are sparked by it. And the people 
-          who are like offended by it, it doesn't matter.`,
-        },
-        {
-          label: "draws",
-          value: "draws",
-          desc: `We are still working on making this feature available`,
-        },
-        {
-          label: "live scores",
-          value: "live scores",
-          desc: `We are still working on making this feature available.`,
-        }
-    ];
+    const [tabs, setTabs] = React.useState<{
+        id: string;
+        value: string;
+        desc: string;
+    }[]>([{id: '', value: '', desc: ''}]);
+    
+    useEffect(() => {
+        if (category === 'players') {
+            setTabs(playerTabs);
+        } else {
+            setTabs(tournamentTabs);
+        } 
+    }, [category]);
 
     return (
-        <div>
-            <Tabs value={activeTab} className="pt-1">
-                <TabsHeader
-                    className="rounded-none border-b border-blue-gray-50 bg-transparent p-0"
-                    indicatorProps={{
-                    className:
-                        "bg-transparent border-b-2 border-gray-900 shadow-none rounded-none",
-                    }}
-                >
-                    {data.map(({ label, value }) => (
-                        <Tab
-                            key={value}
-                            value={value}
-                            onClick={() => setActiveTab(value)}
-                        >
-                            {label}
-                        </Tab>
-                    ))}
-                </TabsHeader>
-                <TabsBody>
-                    <div className="pt-2">
-                        {activeTab === "results" && (
-                            <div>DATA</div>
-                        )}
-                        {activeTab !== "results"  && (
-                            <div>
-                                {data.map(({ value, desc }) => (
-                                    <TabPanel key={value} value={value}>
-                                        {desc}
-                                    </TabPanel>
-                                ))}
-                            </div>
-                        )}
-                    </div>      
-                </TabsBody>
-            </Tabs>
-        </div>
-    )
+        <div className="flex w-full flex-col pt-2 pl-2 pr-2">
+            <Tabs 
+                aria-label="tabs" 
+                items={tabs}
+                size="md"
+                color="secondary"
+                fullWidth={true}
+            >
+                {(item) => (
+                    <Tab key={item.id} title={item.value}>
+                        <Card>
+                        <CardBody>
+                            {item.id === "results" ? (
+                                <ResultsPage
+                                    category={category}
+                                />
+                            ) : (
+                                <EmptyState 
+                                    subtitle={item.desc}
+                                />
+                            )}  
+                        </CardBody>
+                        </Card>  
+                    </Tab>
+                    )}
+                {/* <Tab key="result" title="Results">
+                    <Card>
+                        <CardBody>
+                            <ResultsPage 
+                                matches={matches}
+                                isLoading={isLoading}
+                            />
+                        </CardBody>
+                    </Card>  
+                </Tab>
+                <Tab key="elo" title="ELO">
+                    <Card>
+                        <CardBody>
+                            <EmptyState 
+                                title="Shits empty"
+                            />
+                        </CardBody>
+                    </Card>  
+                </Tab>*/}
+           </Tabs> 
+        </div>  
+    );
 };
 
 export default DataPage;

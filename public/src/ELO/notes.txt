@@ -1,0 +1,11 @@
+TODO:
+
+- connect to matches and players and tournament
+
+
+- get all matches ordered by date, first to last
+- order matches with the same date based on round
+
+for each round, for each match
+- compare elos
+- compare  

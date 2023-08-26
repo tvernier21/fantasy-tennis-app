@@ -36,7 +36,10 @@ export default async function getPlayers(
         const players = await prisma.player.findMany({
             where: {
                 ...query,
-                isActive: true
+                isActive: true,
+                numMatches: {
+                    gte: 30
+                }
             },
             orderBy: {
                 elo: 'desc'

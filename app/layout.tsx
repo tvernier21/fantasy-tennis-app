@@ -1,11 +1,8 @@
-import { Nunito } from 'next/font/google'
 import React from 'react'
 
-import Navbar from './components/navbar/Navbar'
-import ClientOnly from './components/ClientOnly'
-import RegisterModal from './components/modals/RegisterModal'
-import LoginModal from './components/modals/LoginModal'
-import ToasterProvider from './providers/ToasterProvider'
+import { Nunito } from 'next/font/google'
+import { Providers } from "./providers";
+
 import getCurrentUser from './actions/getCurrentUser'
 
 import './globals.css'
@@ -27,19 +24,11 @@ export default async function RootLayout({
   const currentUser = await getCurrentUser()
 
   return (
-    <html lang="en">
-      <body className={`${font.className} tennis-ball-yellow`}>
-        <ClientOnly>
-          <ToasterProvider />
-          <LoginModal />
-          <RegisterModal />
-          <Navbar 
-            currentUser={currentUser} 
-          />
-        </ClientOnly>
-        <div className="pb-4 pt-4">
+    <html lang="en" className='dark'>
+      <body className={`${font.className}`}>
+        <Providers currentUser={currentUser}>
           {children}
-        </div>
+        </Providers>
       </body>
     </html>
   )

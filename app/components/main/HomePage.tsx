@@ -11,20 +11,20 @@ const HomePage = () => {
     const registerModal = useRegisterModal();
 
     return (
-        <div className='pt-12 pb-12 bg-white flex flex-col h-full'>
+        <div className='pt-12 pb-12 rounded-xl bg-gray-700 flex flex-col h-full'>
             <div className='flex flex-col justify-center'>
                 <Heading 
                     center
                     title="Welcome to SmashIt"
                     subtitle="SmashIt is a fantasy tennis game where you can create your own team of tennis players and compete against other players."
                 />
-                <div className="text-neutral-500 text-center mt-4 font-light">
+                <div className="text-neutral-400 text-center mt-4 font-light">
                     <div className="justify-center flex flex-row items-center gap-2">
                         <div>
                             Get Started by
                         </div>
                         <div 
-                            className="text-neutral-800 cursor-pointer hover:underline"
+                            className="text-neutral-300 cursor-pointer hover:underline"
                             onClick={() => registerModal.onOpen()}
                         >
                             Registering  
@@ -33,7 +33,7 @@ const HomePage = () => {
                             or
                         </div>
                         <div 
-                            className="text-neutral-800 cursor-pointer hover:underline"
+                            className="text-neutral-300 cursor-pointer hover:underline"
                             onClick={() => loginModal.onOpen()}
                         >
                             Logging In  
