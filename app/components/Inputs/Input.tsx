@@ -27,12 +27,6 @@ const Input: React.FC<InputProps> = ({
 }) => {
     return (
         <div className="w-full relative">
-            {formatPrice && (
-                <BiDollar 
-                    className="text-neutral-700 absolute top-5 left-2"
-                    size={24}
-                />
-            )}
             <input 
                 className={`
                     peer w-full p-4 pt-6 font-light bg-white border-2 rounded-md outline-none transition disabled:opacity-70 disabled:cursop-not-allowed

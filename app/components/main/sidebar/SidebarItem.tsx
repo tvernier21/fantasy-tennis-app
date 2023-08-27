@@ -10,7 +10,7 @@ import Thumbnail from "../../Thumbnail"
 interface SidebarItemProps {
     id: string;
     title: string;
-    description: string;
+    description?: string;
     category: string;
     selected: boolean;
     secondaryText?: string;

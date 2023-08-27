@@ -13,39 +13,48 @@ interface DataPageProps {
     // add more data once its ready
 };
 
-export const playerTabs = [
+const playerTabs = [
     {
         id: "results",
         value: "results",
-        desc: `It really matters and then like it really doesn't matter.
-        What matters is the people who are sparked by it. And the people 
-        who are like offended by it, it doesn't matter.`,
-      },
-      {
+        desc: `results tab`,
+    },
+    {
         id: "elo",
         value: "elo",
         desc: `We are still working on making this feature available`,
-      },
+    }
 ];
 
-export const tournamentTabs = [
+const tournamentTabs = [
     {
         id: "results",
         value: "Results",
-        desc: `It really matters and then like it really doesn't matter.
-        What matters is the people who are sparked by it. And the people 
-        who are like offended by it, it doesn't matter.`,
-      },
-      {
+        desc: `results tab`,
+    },
+    {
         id: "draws",
         value: "draws",
         desc: `We are still working on making this feature available`,
-      },
-      {
+    },
+    {
         id: "live scores",
         value: "live scores",
         desc: `We are still working on making this feature available.`,
-      }
+    }
+];
+
+const leagueTabs = [
+    {
+        id: "home",
+        value: "home",
+        desc: `league home tab`,
+    },
+    {
+        id: "Teams",
+        value: "Teams",
+        desc: ``,
+    }
 ];
 
 

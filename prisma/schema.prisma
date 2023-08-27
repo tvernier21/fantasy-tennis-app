@@ -52,7 +52,8 @@ model League {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   adminId       String   @db.ObjectId
   name          String
-  private       Boolean  @default(false)
+  format        String
+  img           String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 

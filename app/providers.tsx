@@ -9,10 +9,11 @@ import ClientOnly from './components/ClientOnly'
 import RegisterModal from './components/modals/RegisterModal'
 import LoginModal from './components/modals/LoginModal'
 import ToasterProvider from './providers/ToasterProvider'
+import { SafeUser } from "./types";
 
 type ProvidersProps = {
   children: React.ReactNode;
-  currentUser: any; // You can replace 'any' with the actual type of currentUser if known
+  currentUser: SafeUser | null;
 };
 
 export function Providers({ children, currentUser }: ProvidersProps) {

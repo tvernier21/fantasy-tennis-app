@@ -4,15 +4,17 @@ import getCurrentUser from "../../actions/getCurrentUser"
 
 import ClientOnly from "../../components/ClientOnly"
 import Container from "../../components/Container"
-import MainPage from "../../components/main/MainPage"
+import DraftPage from "../../components/main/DraftPage"
+import LeagueModal from "../../components/modals/LeagueModal"
 
 export default async function Main() {
   const currentUser = await getCurrentUser();
 
   return (
     <ClientOnly>
+      <LeagueModal />
       <Container>
-        <MainPage 
+        <DraftPage 
           currentUser={currentUser}
         />
       </Container>

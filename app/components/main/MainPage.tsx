@@ -16,7 +16,7 @@ const MainPage: React.FC<MainPageProps> = ({
 }) => {
     const pathname = usePathname();
     const category = pathname ? pathname.split('/')[1] : null;
-
+    
 
     return (
         <div className="flex flex-col md:flex-row h-screen justify-center items-center"> {/* Added h-screen to fill height */}
@@ -29,7 +29,7 @@ const MainPage: React.FC<MainPageProps> = ({
                 </div>
             </div>
         </div>
-    );
+    );1
     
 }
 
