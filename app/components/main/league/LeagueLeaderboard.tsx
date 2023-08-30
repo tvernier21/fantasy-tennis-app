@@ -16,7 +16,7 @@ const LeagueHome: React.FC<LeagueHomeProps> = ({
         <div>
             <Heading 
                 title="League Home" 
-                center
+                 center
             />
         </div>
     )

@@ -16,11 +16,13 @@ export async function GET(
         throw new Error('Invalid name');
     }
 
-    console.log(userId);
-
     const leagues = await prisma.league.findMany({
         where: {
-            adminId: userId
+            users: {
+                some: {
+                    userId: userId
+                }
+            }
         },
         orderBy: {
             updatedAt: 'desc'

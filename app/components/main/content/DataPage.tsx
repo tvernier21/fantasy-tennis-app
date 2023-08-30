@@ -7,9 +7,13 @@ import {Tabs, Tab, Card, CardBody, CardHeader} from "@nextui-org/react";
 
 import EmptyState from "../../EmptyState";
 import ResultsPage from "./ResultsPage";
+import { SafeUser } from "@/app/types";
+import LeagueLeaderboard from "../league/LeagueLeaderboard";
+import LeagueTeam from "../league/LeagueTeam";
 
 interface DataPageProps {
     category: string | null | undefined;
+    currentUser?: SafeUser | null;
     // add more data once its ready
 };
 
@@ -46,20 +50,21 @@ const tournamentTabs = [
 
 const leagueTabs = [
     {
-        id: "home",
-        value: "home",
+        id: "leaderboard",
+        value: "Leaderboards",
         desc: `league home tab`,
     },
     {
-        id: "Teams",
+        id: "teams",
         value: "Teams",
-        desc: ``,
+        desc: `each team in the league`,
     }
 ];
 
 
 const DataPage: React.FC<DataPageProps> = ({
-    category
+    category,
+    currentUser,
 }) => {
     const [tabs, setTabs] = React.useState<{
         id: string;
@@ -70,9 +75,13 @@ const DataPage: React.FC<DataPageProps> = ({
     useEffect(() => {
         if (category === 'players') {
             setTabs(playerTabs);
-        } else {
+        } else if (category === 'tournaments') {
             setTabs(tournamentTabs);
-        } 
+        } else if (category === 'leagues') {
+            setTabs(leagueTabs);
+        } else {
+            setTabs([{id: '', value: '', desc: ''}]);
+        }
     }, [category]);
 
     return (
@@ -92,6 +101,10 @@ const DataPage: React.FC<DataPageProps> = ({
                                 <ResultsPage
                                     category={category}
                                 />
+                            ) : item.id === "leaderboards" ? (
+                                <LeagueLeaderboard currentUser={currentUser} />
+                            ) : item.id === "teams" ? (
+                                <LeagueTeam currentUser={currentUser} />
                             ) : (
                                 <EmptyState 
                                     subtitle={item.desc}

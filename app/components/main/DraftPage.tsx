@@ -11,7 +11,7 @@ import { SafeUser } from "../../types";
 import HomePage from "./HomePage"
 import SidebarList from "./sidebar/SidebarList";
 import Heading from "../Heading";
-import LeagueHome from "./league/LeagueHome";
+import DataPage from "./content/DataPage";
 
 interface DraftPageProps {
     currentUser?: SafeUser | null;
@@ -96,7 +96,8 @@ const DraftPage: React.FC<DraftPageProps> = ({
                     </div>
                 </div>
                 <div className="md:w-4/5 w-full h-screen bg-gray-700 rounded-r-xl"> {/* Added rounded right corner */}
-                    <LeagueHome 
+                    <DataPage    
+                        category={category}
                         currentUser={currentUser}
                     />
                 </div>

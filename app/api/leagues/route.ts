@@ -1,11 +1,8 @@
 import prisma from "@/app/libs/prismadb";
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import { NextResponse } from "next/server";
-import { now } from "next-auth/client/_utils";
 
-export async function POST(
-    request: Request
-) {
+export async function POST(request: Request) {
     const currentUser = await getCurrentUser();
 
     if (!currentUser) {
@@ -13,19 +10,24 @@ export async function POST(
     }
 
     const body = await request.json();
-    const {
-        name,
-        format,
-    } = body;
+    const { name, format } = body;
 
     const league = await prisma.league.create({
         data: {
-            adminId: currentUser.id,
             name: name,
             format: format,
-            img: "/images/court.png"
+            img: "/images/court.png",
+            adminId: currentUser.id,
+            users: {
+                create: {
+                    userId: currentUser.id
+                }
+            }
+        },
+        include: {
+            users: true  // Include UserLeague entries in the response
         }
     });
 
-    return NextResponse.json(league)
+    return NextResponse.json(league);
 }
