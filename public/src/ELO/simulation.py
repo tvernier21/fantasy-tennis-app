@@ -53,7 +53,8 @@ def main():
     print("Starting Simulation")
     # Get tournaments ordered by ascending date and greater than 2010
     tournaments = list(tournaments_db.find({"date": 
-                                            {"$gt": datetime(2022, 8, 1)}}).sort("date", 1))
+                                            {"$gt": datetime(2022, 8, 25),
+                                             "$lt": datetime(2023, 8, 25)}}).sort("date", 1))
     
     for tournament in tournaments:
         print(f"Running tournament: {tournament['name']}")

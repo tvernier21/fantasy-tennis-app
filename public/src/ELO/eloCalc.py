@@ -39,9 +39,9 @@ def result(score_str, isFiveSet):
     set_ratio = 1
     extra_correction = 1
     if isFiveSet and loser_sets == 2:
-        set_ratio = .7
+        set_ratio = .75
     elif isFiveSet and loser_sets == 1:
-        set_ratio = .9
+        set_ratio = .85
         extra_correction = .8
     elif not isFiveSet and loser_sets == 1:
         set_ratio = .75
@@ -51,8 +51,8 @@ def result(score_str, isFiveSet):
     # set_ratio can be .5 to 1, but really can only be .6, 66, .75 or 1
     # subtract from set ratio, up to .5, by the ratio of games the loser got
     # over the maximum amount of games the loser could have gotten
-    correction = (set_ratio - .5) * (game_ratio / .6) * extra_correction
-    result =  set_ratio - correction
+    # correction = (set_ratio - .5) * (game_ratio / .6) * extra_correction
+    result =  set_ratio# - correction
     return result
 
 

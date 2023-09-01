@@ -28,32 +28,6 @@ model User {
   teams          Team[] 
 }
 
-model League {
-  id            String           @id @default(auto()) @map("_id") @db.ObjectId
-  name          String
-  format        String
-  img           String?
-  createdAt     DateTime         @default(now())
-  updatedAt     DateTime         @updatedAt
-  adminId       String           @db.ObjectId
-
-  admin         User             @relation("adminOf", fields: [adminId], references: [id])
-  users         UserLeague[]     // Many-to-many relation through a join model
-  teams         Team[]  
-}
-
-// Join model for the many-to-many relation between User and League
-model UserLeague {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String @db.ObjectId
-  leagueId  String @db.ObjectId
-  user      User   @relation(fields: [userId], references: [id])
-  league    League @relation(fields: [leagueId], references: [id])
-
-  @@unique([userId, leagueId])
-}
-
-
 
 model Account {
   id                String  @id @default(auto()) @map("_id") @db.ObjectId
@@ -75,16 +49,48 @@ model Account {
 }
 
 
+model League {
+  id            String           @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  format        String
+  img           String?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  adminId       String           @db.ObjectId
+
+  admin         User             @relation("adminOf", fields: [adminId], references: [id])
+  users         UserLeague[]     // Many-to-many relation through a join model
+  teams         Team[]  
+}
+
+
+// Join model for the many-to-many relation between User and League
+model UserLeague {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String @db.ObjectId
+  leagueId  String @db.ObjectId
+  user      User   @relation(fields: [userId], references: [id])
+  league    League @relation(fields: [leagueId], references: [id])
+
+  @@unique([userId, leagueId])
+}
+
+
+
+
 model Team {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   userId        String   @db.ObjectId
   leagueId      String   @db.ObjectId
+  tournamentId  String   @db.ObjectId
   name          String
   points        Float    @default(0)
+  budget        Float    @default(10000)
+  teamCapacity  Int      @default(5)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  players       Player[]
+  players       PlayerTeam[]
   user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   league        League   @relation(fields: [leagueId], references: [id], onDelete: Cascade)
 }
@@ -115,8 +121,7 @@ model Player {
   matchesWon    Match[]  @relation("winner")
   matchesLost   Match[]  @relation("loser")
   playerElos    PlayerElos[]
-  teams         Team?    @relation(fields: [teamId], references: [id])
-  // tournamentPlayers TournamentPlayer[]
+  tournamentPlayers TournamentPlayer[]
 }
 
 model PlayerElos {
@@ -136,22 +141,31 @@ model PlayerElos {
 }
 
 
-// model TournamentPlayer {
-//   id            String     @id @default(auto()) @map("_id") @db.ObjectId
-//   playerId      String     @db.ObjectId
-//   tournamentId  String     @db.ObjectId
-//   elo           Float
-//   createdAt     DateTime   @default(now())
-//   updatedAt     DateTime   @updatedAt
+model TournamentPlayer {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  playerId     String   @db.ObjectId
+  tournamentId String   @db.ObjectId
+  elo          Float
+  points       Float    @default(0)
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-//   player        Player     @relation(fields: [playerId], references: [id], onDelete: Cascade)
-//   tournament    Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
-//   matchesWon    Match[]    @relation("winner")
-//   matchesLost   Match[]    @relation("loser")
-  
-//   teamId        String?    @db.ObjectId
-//   teams         Team?      @relation(fields: [teamId], references: [id])
-// }
+  teams        PlayerTeam[]
+  tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  player       Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+}
+
+
+model PlayerTeam {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  teamId    String @db.ObjectId
+  playerId  String @db.ObjectId
+  team      Team   @relation(fields: [teamId], references: [id])
+  player    TournamentPlayer @relation(fields: [playerId], references: [id])
+
+  @@unique([teamId, playerId])
+}
 
 
 model Tournament {
@@ -163,10 +177,11 @@ model Tournament {
   difficulty    Int
   img           String?
   link          String?
+  active        Boolean
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  // players       TournamentPlayer[]
+  players       TournamentPlayer[]
   matches       Match[]
 }
 

@@ -149,22 +149,7 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
         }
     }, []);
     
-    console.log(columns)
-    console.log(structuredTeams)
 
-
-    let [page, setPage] = React.useState(1);
-    let rowsPerPage = 4;
-
-    let pages = (structuredTeams ? Math.ceil(structuredTeams.length / rowsPerPage) : 0);
-
-    let items = React.useMemo(() => {
-        const start = (page - 1) * rowsPerPage;
-        const end = start + rowsPerPage;
-
-        return (structuredTeams ? structuredTeams.slice(start, end) : []);
-    }, [page, structuredTeams]);
-    
     return (
         <div className="overflow-y-auto">
             <Table 
