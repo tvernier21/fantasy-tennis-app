@@ -2,24 +2,21 @@
 
 import React, { useEffect, useMemo, useState } from "react"
 import { useSearchParams } from 'next/navigation';
-import {Card, CardHeader, CardBody, Image, Table,
+import {
+    Card, 
+    CardHeader, 
+    CardBody, 
+    Image, 
+    Table,
     TableHeader,
     TableColumn,
     TableBody,
     TableRow,
     TableCell,
-    Input,
-    Button,
-    DropdownTrigger,
-    Dropdown,
-    DropdownMenu,
-    DropdownItem,
-    Chip,
-    User,
-    Pagination,
-    Selection,
-    ChipProps,
-    SortDescriptor, Spinner} from "@nextui-org/react";
+    Spinner
+} from "@nextui-org/react";
+import axios from "axios";
+import { toast } from 'react-hot-toast';
 
 import { SafeUser } from "../../../types";
 import Heading from "../../Heading";
@@ -34,7 +31,7 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
 }) => {
     const selected = useSearchParams()?.get("selected");
     const numPlayers = 6;
-    // const [teams, setTeams] = useState<any>({});
+    const [bgak, setBgak] = useState<any>({});
     const [structuredTeams, setStructuredTeams] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -55,14 +52,34 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
     }, [numPlayers]);
 
     // example teams data. instead call api to get this data
-    // useEffect(() => {
-    //     if (!selected) return;
+    useEffect(() => {
+        if (!selected || !currentUser) return;
 
-    //     setIsLoading(true);   
-    //     endpoint = `/api/league/${selected}/teams`;
+        setIsLoading(true);   
+        let endpoint = '/api/leagues/teams/';
+            
+        // Fetch the data
+        axios.get(endpoint, {params: {
+                                leagueId: selected,
+                                currentUser: currentUser?.id
+                            }})
+            .then((res) => {
+                setBgak(res.data);
+            })
+            .catch((error) => {
+                            // Check for the status code in the error response
+                if (error.response && error.response.status === 404) {
+                    toast.error("Leagues not found for the user");
+                } else {
+                    toast.error("Something went wrong");
+                }
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
+    }, [selected, currentUser]);
+    console.log(bgak);
 
-
-    // }, [selected])
     const teams = {
         "team1": [{"id": "010101"}], 
         "team2": [], 

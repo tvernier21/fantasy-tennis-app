@@ -1,23 +1,25 @@
 import prisma from '@/app/libs/prismadb';
 import { NextResponse } from 'next/server';
+import getCurrentUser from "@/app/actions/getCurrentUser";
 
-
-interface IParams{
-    leagueId?: string;
-    currentUser?: any;
-}
 
 export async function GET(
-    request: Request,
-    { params }: { params: IParams }
+    request: Request
 ) {
-    const { leagueId, currentUser } = params;
+    const url = new URL(request.url);
+
+    // Get the leagueId and currentUser from the URL's search parameters
+    const leagueId = url.searchParams.get('leagueId');
+    const currentUser = url.searchParams.get('currentUser');
+
+    const actualUser = await getCurrentUser();
+
 
     if (!leagueId || typeof leagueId !== 'string') {
         throw new Error('Invalid leagueId');
     }
 
-    if (!currentUser || typeof currentUser !== 'object') {
+    if (!currentUser || typeof currentUser !== 'string' || currentUser !== actualUser?.id) {
         throw new Error('Invalid user');
     }
 
@@ -39,9 +41,8 @@ export async function GET(
 
     let isUserInLeague = false;
     // for users, check currentUser is in users
-    const userId = currentUser.id;
     for (const leagueuser of leagueusers) {
-        if (leagueuser.userId === userId) {
+        if (leagueuser.userId === currentUser) {
             isUserInLeague = true;
             break;
         }
@@ -93,6 +94,7 @@ export async function GET(
         const players = tournamentPlayers.filter(tournamentPlayer => 
                                                     playersTeam.find(playerTeam => 
                                                         playerTeam.playerId === tournamentPlayer.playerId));
+
         // sort players on elo, high to low
         players.sort((a, b) => b.elo - a.elo);
         userTeams[user.name] = players;
