@@ -95,7 +95,7 @@ const DraftPage: React.FC<DraftPageProps> = ({
                         )}
                     </div>
                 </div>
-                <div className="md:w-4/5 w-full h-screen bg-gray-700 rounded-r-xl"> {/* Added rounded right corner */}
+                <div className="md:w-4/5 w-full h-screen bg-gray-700 rounded-r-xl overflow-y-auto"> {/* Added rounded right corner */}
                     <DataPage    
                         category={category}
                         currentUser={currentUser}

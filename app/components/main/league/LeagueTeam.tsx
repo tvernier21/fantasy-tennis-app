@@ -1,10 +1,29 @@
 'use client';
 
-import React, { useEffect } from "react"
-import {Card, CardHeader, CardBody, Image} from "@nextui-org/react";
+import React, { useEffect, useMemo, useState } from "react"
+import { useSearchParams } from 'next/navigation';
+import {Card, CardHeader, CardBody, Image, Table,
+    TableHeader,
+    TableColumn,
+    TableBody,
+    TableRow,
+    TableCell,
+    Input,
+    Button,
+    DropdownTrigger,
+    Dropdown,
+    DropdownMenu,
+    DropdownItem,
+    Chip,
+    User,
+    Pagination,
+    Selection,
+    ChipProps,
+    SortDescriptor, Spinner} from "@nextui-org/react";
 
 import { SafeUser } from "../../../types";
 import Heading from "../../Heading";
+import { set } from "date-fns";
 
 interface LeagueHomeProps {
     currentUser?: SafeUser | null;
@@ -13,36 +32,172 @@ interface LeagueHomeProps {
 const LeagueTeam: React.FC<LeagueHomeProps> = ({
     currentUser,
 }) => {
-    const numTeams = 4;
+    // const selected = useSearchParams()?.get("selected");
+    const numPlayers = 6;
+    const [structuredTeams, setStructuredTeams] = useState<any[]>([]);
+    // const [isLoading, setIsLoading] = useState(true);
 
-    const gridClassName = `gap-2 grid grid-cols-${numTeams} grid-rows-8`
-    const gridContainerStyle = {
-        display: 'grid',
-        gridTemplateColumns: `repeat(${numTeams}, 1fr)`, // Adjust the number 3 based on how many columns you want
-        gridAutoFlow: 'column',
-        gap: '1rem' // Adjust the gap as needed
+
+    function createPlayerColumns(numPlayers: number): { name: string, uid: string }[] {
+        const columns: { name: string, uid: string }[] = [];
+        for (let i = 0; i <= numPlayers; i++) {
+            if (i === 0) {
+                columns.push({name: 'User', uid: 'user'});
+            } else {
+                columns.push({name: 'Player', uid: `player${i}`});
+            }
+        }
+        return columns;
+    }    
+    const columns = useMemo(() => {
+        return createPlayerColumns(numPlayers);
+    }, [numPlayers]);
+
+    // example teams data. instead call api to get this data
+    const teams = {
+        "team1": [{"id": "010101"}], 
+        "team2": [], 
+        "team3": [{"id": "010102"}, {"id": "010103"}], 
+        "team4": [{"id": "010104"}, {"id": "010105"}, {"id": "010106"}],
+        "team5": [{"id": "010107"}, {"id": "010108"}, {"id": "010109"}, {"id": "010110"}],
     };
+    useEffect(() => {
+        const tmpStructuredTeams: any[] = [];
+
+        Object.entries(teams).forEach(([teamName, teamMembers]) => {
+            const teamMap: { [key: string]: string | null } = {};
+            teamMap[columns[0].uid] = teamName;
+
+            for (let i = 1; i < columns.length; i++) {
+                if (i - 1 < teamMembers.length) {
+                    teamMap[columns[i].uid] = teamMembers[i - 1].id;
+                } else {
+                    teamMap[columns[i].uid] = null;
+                }
+            }
+
+            tmpStructuredTeams.push(teamMap);
+        });
+
+        if (JSON.stringify(structuredTeams) !== JSON.stringify(tmpStructuredTeams)) {
+            setStructuredTeams(tmpStructuredTeams);
+            // setIsLoading(false);
+        }
+    }, [teams, columns]);
+
+
+    const renderCell = React.useCallback((team: any, columnKey: React.Key) => {
+        const cellValue = team[columnKey];
     
-    return (
-        <div>
-            <div style={gridContainerStyle} className="overflow-x-auto">
-                <Card className="py-4" isPressable>
-                    <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-                        <p className="text-tiny uppercase font-bold">Player Name</p>
-                        <small className="text-defaul t-500">Value</small>
-                        <h4 className="font-bold text-large">+21</h4>
+        if (columnKey === "user") {
+            return (
+                <Card className="py-4 bg-gray-400">
+                    <CardHeader className="pb- px-4 flex-col items-center">
+                        <h4 className="font-bold text-large justify-center">{cellValue}</h4>
                     </CardHeader>
-                    <CardBody className="overflow-visible py-2">
+                    <CardBody className="overflow-visible py-2 flex-col items-center">
                         <Image
-                        alt="Card background"
-                        className="object-cover rounded-xl"
-                        src="/images/tennis-player.png"
-                        width={270}
+                            alt="Card background"
+                            className="object-cover rounded-xl"
+                            src={currentUser?.image? currentUser.image : "/images/placeholder.png"}
+                            width={100}
+                            height={100}
                         />
                     </CardBody>
                 </Card>
-            </div>
-        </div>
+            );
+        } else if(typeof columnKey === 'string' && columnKey.startsWith("player")) {
+            return (
+                cellValue === null ? (
+                    <Card className="py-4 bg-gray-500" isPressable>
+                        <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
+                            <p className="text-tiny uppercase font-bold text-left pb-2">Select Player</p>
+                            <small className="text-default-500">--</small>
+                            <h4 className="font-bold text-large">--</h4>
+                        </CardHeader>
+                        <CardBody className="overflow-visible py-2">
+                            <Image
+                                alt="Card background"
+                                className="object-cover rounded-xl"
+                                src="/images/tennis-player-gray.png"
+                                width={100}
+                                height={100}
+                            />
+                        </CardBody>
+                    </Card>
+                ) : (
+                    <Card className="py-4 bg-gray-500" isPressable>
+                        <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
+                            <p className="text-tiny uppercase font-bold text-left">Player Name</p>
+                            <small className="text-default-500">Value</small>
+                            <h4 className="font-bold text-large">+21</h4>
+                        </CardHeader>
+                        <CardBody className="overflow-visible py-2">
+                            <Image
+                                alt="Card background"
+                                className="object-cover rounded-xl"
+                                src="/images/tennis-player.png"
+                                width={100}
+                                height={100}
+                            />
+                        </CardBody>
+                    </Card>
+                )
+            );
+        } else {
+            return cellValue;
+        }
+    }, []);
+    
+    console.log(columns)
+    console.log(structuredTeams)
+
+
+    let [page, setPage] = React.useState(1);
+    let rowsPerPage = 4;
+
+    let pages = (structuredTeams ? Math.ceil(structuredTeams.length / rowsPerPage) : 0);
+
+    let items = React.useMemo(() => {
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+
+        return (structuredTeams ? structuredTeams.slice(start, end) : []);
+    }, [page, structuredTeams]);
+    
+    return (
+        <div className="overflow-y-auto">
+            <Table 
+                aria-label="Example table with custom cells, pagination and sorting"
+                className="flex w-full justify-center"
+                classNames={{
+                    base: "max-h-[2200px]",
+                    table: "min-h-[200px]",
+                }}
+                >
+                <TableHeader columns={columns}>
+                    {(column) => (
+                        <TableColumn
+                        key={column.uid}
+                        align="start"
+                        >
+                            {column.name}
+                        </TableColumn>
+                    )}
+                </TableHeader>
+                <TableBody 
+                    isLoading={structuredTeams.length === 0}
+                    items={structuredTeams}
+                    loadingContent={<Spinner />}
+                    >
+                    {(item) => (
+                        <TableRow key={item.user}>
+                            {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
+                        </TableRow>
+                    )}
+                </TableBody>
+            </Table>
+                    </div>
     )
 };
 
