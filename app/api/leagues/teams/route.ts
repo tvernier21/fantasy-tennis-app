@@ -99,6 +99,7 @@ export async function GET(
         players.sort((a, b) => b.elo - a.elo);
         userTeams[user.name] = players;
     }
+    console.log(userTeams)
 
     return NextResponse.json(userTeams);
 }

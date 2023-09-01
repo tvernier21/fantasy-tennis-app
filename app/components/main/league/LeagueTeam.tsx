@@ -31,7 +31,7 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
 }) => {
     const selected = useSearchParams()?.get("selected");
     const numPlayers = 6;
-    const [bgak, setBgak] = useState<any>({});
+    const [teams, setTeams] = useState<any>({});
     const [structuredTeams, setStructuredTeams] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -64,7 +64,7 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
                                 currentUser: currentUser?.id
                             }})
             .then((res) => {
-                setBgak(res.data);
+                setTeams(res.data);
             })
             .catch((error) => {
                             // Check for the status code in the error response
@@ -78,15 +78,7 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
                 setIsLoading(false);
             });
     }, [selected, currentUser]);
-    console.log(bgak);
 
-    const teams = {
-        "team1": [{"id": "010101"}], 
-        "team2": [], 
-        "team3": [{"id": "010102"}, {"id": "010103"}], 
-        "team4": [{"id": "010104"}, {"id": "010105"}, {"id": "010106"}],
-        "team5": [{"id": "010107"}, {"id": "010108"}, {"id": "010109"}, {"id": "010110"}],
-    };
     useEffect(() => {
         const tmpStructuredTeams: any[] = [];
 
