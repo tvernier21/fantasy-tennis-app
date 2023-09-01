@@ -32,10 +32,11 @@ interface LeagueHomeProps {
 const LeagueTeam: React.FC<LeagueHomeProps> = ({
     currentUser,
 }) => {
-    // const selected = useSearchParams()?.get("selected");
+    const selected = useSearchParams()?.get("selected");
     const numPlayers = 6;
+    // const [teams, setTeams] = useState<any>({});
     const [structuredTeams, setStructuredTeams] = useState<any[]>([]);
-    // const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
 
 
     function createPlayerColumns(numPlayers: number): { name: string, uid: string }[] {
@@ -54,6 +55,14 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
     }, [numPlayers]);
 
     // example teams data. instead call api to get this data
+    // useEffect(() => {
+    //     if (!selected) return;
+
+    //     setIsLoading(true);   
+    //     endpoint = `/api/league/${selected}/teams`;
+
+
+    // }, [selected])
     const teams = {
         "team1": [{"id": "010101"}], 
         "team2": [], 

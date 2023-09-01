@@ -83,7 +83,7 @@ model Team {
   userId        String   @db.ObjectId
   leagueId      String   @db.ObjectId
   tournamentId  String   @db.ObjectId
-  name          String
+  name          String?
   points        Float    @default(0)
   budget        Float    @default(10000)
   teamCapacity  Int      @default(5)
