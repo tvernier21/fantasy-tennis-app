@@ -1,15 +1,15 @@
 import { create } from 'zustand';
 
-interface LeagueModalState {
+interface PlayerPickerModalState {
     isOpen: boolean;
     onOpen: () => void;
     onClose: () => void;
 }
 
-const useLeagueModal = create<LeagueModalState>((set) => ({
+const usePlayerPickerModal = create<PlayerPickerModalState>((set) => ({
     isOpen: false,
     onOpen: () => set({ isOpen: true }),
     onClose: () => set({ isOpen: false }),
 }));
 
-export default useLeagueModal;
+export default usePlayerPickerModal;

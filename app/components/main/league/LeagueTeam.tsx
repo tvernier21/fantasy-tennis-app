@@ -105,7 +105,7 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
 
 
     const renderCell = React.useCallback((team: any, columnKey: React.Key) => {
-        const cellValue = team[columnKey];
+        const cellValue = team[columnKey];    
     
         if (columnKey === "user") {
             return (
@@ -189,7 +189,7 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
                     )}
                 </TableHeader>
                 <TableBody 
-                    isLoading={structuredTeams.length === 0}
+                    isLoading={isLoading}
                     items={structuredTeams}
                     loadingContent={<Spinner />}
                     >
