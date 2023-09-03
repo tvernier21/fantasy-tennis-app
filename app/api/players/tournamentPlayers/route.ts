@@ -5,22 +5,43 @@ import { NextResponse } from "next/server";
 export async function GET(
     request: Request
 ) {
-    const currentUser = await getCurrentUser();
+    const actualUser = await getCurrentUser();
+    const url = new URL(request.url);
 
-    if (!currentUser) {
+    // Get the leagueId and currentUser from the URL's search parameters
+    const leagueId = url.searchParams.get('leagueId');
+    const currentUser = url.searchParams.get('currentUser');
+
+    if (!currentUser || type of currentUser !== "string" || currentUser !== actualUser?.id) {
         return NextResponse.error();
-    }
+    };
 
-    //get leagueid
-    // get team associated with league and user
-    // get budget
-    // get all tournament Players
-    // filter players over the current budget
-    
-    
-    
-    
-    // const league = await prisma.league.findFirst({
+    const tournamentId = await prisma.tournament.findFirst({
+        where: {
+            active: true
+        },
+        include: {
+            id
+        }
+    });
 
-    // return NextResponse.json(league);
-}
+    const userTeam = await prisma.team.findFirst({
+        where: {
+            userId: currentUser,
+            leagueId: leagueId,
+            tournamentId: tournamentId,
+        }
+    });
+    const userBudget = userTeam.budget;
+
+
+    const players = await prisma.tournamentPlayer.findMany({
+        where: {
+            tournamentId: tournamentId
+        }
+    });
+
+    const validPlayers = players.filter(player => player.elo <= userBudget);
+    
+    return NextResponse.json(league);
+};

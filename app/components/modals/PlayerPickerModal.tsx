@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import { Field, FieldValues, SubmitHandler, useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Input, Select, SelectItem } from "@nextui-org/react";
 
 import usePlayerPickerModal from '../../hooks/usePlayerPickerModal';
@@ -14,6 +14,7 @@ import Heading from '../Heading';
 
 const PlayerPickerModal = () => {
     const router = useRouter();
+    const selected = useSearchParams()?.get("selected");
     const playerPickerModal = usePlayerPickerModal();
     const [isLoading, setIsLoading] = useState(false);
     const [buttonDisabled, setButtonDisabled] = useState(true);
@@ -40,7 +41,26 @@ const PlayerPickerModal = () => {
         if (!playerPickerModal.isOpen) return;
 
         setIsLoading(true);
-        let endpoint = '/api/leagues/';
+        let endpoint = '/api/players/tournamentPlayers';
+
+        axios.get(endpoint, {params: {
+                                leagueId: selected,
+                                currentUser: currentUser?.id
+                            }})
+            .then((res) => {
+                set(res.data);
+            })
+            .catch((error) => {
+                            // Check for the status code in the error response
+                if (error.response && error.response.status === 404) {
+                    toast.error("Leagues not found for the user");
+                } else {
+                    toast.error("Something went wrong");
+                }
+            })
+            .finally(() => {
+                setIsLoading(false);
+        });
     }, [playerPickerModal.isOpen]);
 
 
