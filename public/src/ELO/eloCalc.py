@@ -70,33 +70,53 @@ def expectedFiveSet(p3):
 
 def expected(elo1, elo2, isFiveSet=False):
     # Returns a number between 0 and 1 that represents the odds of player 1 winning
-    odds = 1 - (1 / (1 + math.pow(10, (elo1 - elo2) / 400)))
+    odds = 1 / (1 + math.pow(10, (elo2 - elo1) / 400))
     if isFiveSet:
         odds = expectedFiveSet(odds)
     return odds
 
 
+def competitiveness(elo1, elo2):
+    diff = abs(elo1 - elo2)
+    x = .8
+    if diff <= 300: 
+        x = 1 
+    elif diff <= 500:
+        x = .95
+    elif diff <= 800:
+        x = .9
+    else:
+        x = .8
+    return x
+
+
 def kFactorAdjustment(k, elo, difficulty):
     # Returns the k factor based on the elo of the player
-    adj = 1 + (18 / (1 + 2**((elo - 1500) / 63)))
+    adj = 1 #+ (18 / (1 + 2**((elo - 1500) / 63)))
     tournament_adj = .8
     if difficulty == 4:
         tournament_adj = .9
     elif difficulty == 5:
         tournament_adj = 1
+    # print("adj", adj)
     return k * adj * tournament_adj
 
 
-def eloChange(elo1, elo2, score_str, isFiveSet=False):
-    expectedScore = expected(elo1, elo2, isFiveSet)
+def eloChange(elo1, elo2, score_str, isFiveSet=False, k=32):
+    expectedScore1 = expected(elo1, elo2, isFiveSet)
+    expectedScore2 = expected(elo2, elo1, isFiveSet)
     matchResult = result(score_str, isFiveSet)
+    comp_adj = competitiveness(elo1, elo2)
     if matchResult == -1:
         return 0, 0
-    player1_K = kFactorAdjustment(32, elo1, isFiveSet)
-    player2_K = kFactorAdjustment(32, elo2, isFiveSet)
+    player1_K = kFactorAdjustment(k, elo1, isFiveSet)
+    player2_K = kFactorAdjustment(k, elo2, isFiveSet)
+    # print("K:", player1_K, player2_K)
+    # print("match result: ", matchResult)
+    # print("expected score: ", expectedScore1, expectedScore2)
 
-    player1_change = player1_K * (matchResult - expectedScore)
-    player2_change = player2_K * (1 - matchResult - (1 - expectedScore))
+    player1_change = player1_K * comp_adj * (matchResult - expectedScore1)
+    player2_change = player2_K * comp_adj * (1 - matchResult - expectedScore2)
 
     return player1_change, player2_change
 
