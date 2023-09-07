@@ -28,16 +28,18 @@ const PlayerPickerModal = () => {
         },
       } = useForm<FieldValues>({
         defaultValues: {},
-    });
+    }); 
 
     useEffect(() => {
         if (!playerPickerModal.isOpen) return;
 
         setIsLoading(true);
-        let endpoint = '/api/players/tournamentPlayers';
+        const endpoint = '/api/players/tournamentPlayers';
+        const oldPlayerCost = playerPickerModal.currPlayer ? playerPickerModal.currPlayer.elo : 0;
 
         axios.get(endpoint, {params: {
-                                leagueId: selected
+                                leagueId: selected,
+                                currPlayerBudget: oldPlayerCost
                             }})
             .then((res) => {
                 setPlayers(res.data);
@@ -53,11 +55,10 @@ const PlayerPickerModal = () => {
             .finally(() => {
                 setIsLoading(false);
         });
-    }, [playerPickerModal.isOpen]);
+    }, [playerPickerModal.isOpen, playerPickerModal.currPlayer]);
 
 
     useEffect(() => {
-        console.log(value)
         if (!value || value.size === 0) {
             setButtonDisabled(true);
         }
@@ -69,14 +70,18 @@ const PlayerPickerModal = () => {
 
     const onSubmit: SubmitHandler<FieldValues> = (data) => {
         if (buttonDisabled || !selected) return;
+
+        const oldPlayerId = playerPickerModal.currPlayer ? playerPickerModal.currPlayer.id : " ";
+        const oldPlayerCost = playerPickerModal.currPlayer ? playerPickerModal.currPlayer.elo : 0
         
         // Construct the data to send
         const postData = {
             ...data,
-            leagueId: selected
+            leagueId: selected,
+            oldPlayerId: oldPlayerId,
+            oldPlayerCost: oldPlayerCost,
         };
         setIsLoading(true);
-        console.log(selected);
         const endpoint = `/api/teams/${value.currentKey}`;
         axios.post(endpoint, postData)
             .then(() => {

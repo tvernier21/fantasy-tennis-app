@@ -10,9 +10,14 @@ export async function GET(
 
     // Get the leagueId and currentUser from the URL's search parameters
     const leagueId = url.searchParams.get('leagueId');
+    const currPlayerBudget = Number(url.searchParams.get('currPlayerBudget'));
 
     if (!actualUser) {
         return new Error;
+    }
+
+    if (!leagueId || typeof leagueId !== 'string') {
+        throw new Error('Invalid leagueId');
     }
 
     const tournament = await prisma.tournament.findFirst({
@@ -28,11 +33,11 @@ export async function GET(
             tournamentId: tournament?.id,
         }
     });
-    const userBudget = userTeam.budget;
+    const userBudget = userTeam?.budget + currPlayerBudget;
 
     const userTeamPlayers = await prisma.playerTeam.findMany({
         where: {
-            teamId: userTeam.id,
+            teamId: userTeam?.id,
         }
     });
 

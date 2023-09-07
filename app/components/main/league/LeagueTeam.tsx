@@ -63,10 +63,12 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
         let endpoint = '/api/leagues/teams/';
             
         // Fetch the data
-        axios.get(endpoint, {params: {
-                                leagueId: selected,
-                                currentUser: currentUser?.id
-                            }})
+        axios.get(
+            endpoint, 
+            {params: {
+                leagueId: selected,
+                currentUser: currentUser?.id
+        }})
             .then((res) => {
                 setTeams(res.data);
             })
@@ -81,7 +83,6 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
             .finally(() => {
                 setIsLoading(false);
         });
-
     }, [selected, currentUser, playerPickerModal.isOpen]);
 
     useEffect(() => {
@@ -162,7 +163,7 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
                     <Card 
                         className="py-4 bg-gray-500" 
                         isPressable
-                        onPress={userTeam ? playerPickerModal.onOpen : () => {}} 
+                        onPress={userTeam ? () => playerPickerModal.onOpenWithPlayer(cellValue) : () => {}} 
                     >
                         <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
                             <p className="text-tiny uppercase font-bold text-left">{cellValue.name}</p>

@@ -89,6 +89,7 @@ export async function GET(
     // create an object, mapping users.name to teams
     const userTeams = {};
     for (const team of teams) {
+        const budget = team.budget;
         const user = users.find(user => user.id === team.userId);
         const playersTeam = playersTeams.filter(playerTeam => playerTeam.teamId === team.id);
         const players = tournamentPlayers.filter(tournamentPlayer => 
