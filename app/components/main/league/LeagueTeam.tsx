@@ -18,6 +18,7 @@ import {
 import axios from "axios";
 import { toast } from 'react-hot-toast';
 
+import usePlayerPickerModal from "../../../hooks/usePlayerPickerModal";
 import { SafeUser } from "../../../types";
 import Heading from "../../Heading";
 import { set } from "date-fns";
@@ -29,8 +30,9 @@ interface LeagueHomeProps {
 const LeagueTeam: React.FC<LeagueHomeProps> = ({
     currentUser,
 }) => {
+    const playerPickerModal = usePlayerPickerModal();
     const selected = useSearchParams()?.get("selected");
-    const numPlayers = 6;
+    const numPlayers = 5;
     const [teams, setTeams] = useState<any>({});
     const [structuredTeams, setStructuredTeams] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -55,6 +57,8 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
     useEffect(() => {
         if (!selected || !currentUser) return;
 
+        if (playerPickerModal.isOpen) return;
+
         setIsLoading(true);   
         let endpoint = '/api/leagues/teams/';
             
@@ -76,19 +80,20 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
             })
             .finally(() => {
                 setIsLoading(false);
-            });
-    }, [selected, currentUser]);
+        });
+
+    }, [selected, currentUser, playerPickerModal.isOpen]);
 
     useEffect(() => {
         const tmpStructuredTeams: any[] = [];
 
         Object.entries(teams).forEach(([teamName, teamMembers]) => {
-            const teamMap: { [key: string]: string | null } = {};
+            const teamMap: { [key: string]: any } = {};
             teamMap[columns[0].uid] = teamName;
 
             for (let i = 1; i < columns.length; i++) {
                 if (i - 1 < teamMembers.length) {
-                    teamMap[columns[i].uid] = teamMembers[i - 1].id;
+                    teamMap[columns[i].uid] = teamMembers[i - 1];
                 } else {
                     teamMap[columns[i].uid] = null;
                 }
@@ -103,9 +108,12 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
         }
     }, [teams, columns]);
 
+    console.log(playerPickerModal.isOpen);
+
 
     const renderCell = React.useCallback((team: any, columnKey: React.Key) => {
-        const cellValue = team[columnKey];    
+        const cellValue = team[columnKey];
+        console.log(cellValue)
     
         if (columnKey === "user") {
             return (
@@ -127,7 +135,11 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
         } else if(typeof columnKey === 'string' && columnKey.startsWith("player")) {
             return (
                 cellValue === null ? (
-                    <Card className="py-4 bg-gray-500" isPressable>
+                    <Card
+                        className="py-4 bg-gray-500" 
+                        isPressable
+                        onPress={playerPickerModal.onOpen} 
+                    >
                         <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
                             <p className="text-tiny uppercase font-bold text-left pb-2">Select Player</p>
                             <small className="text-default-500">--</small>
@@ -144,11 +156,15 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
                         </CardBody>
                     </Card>
                 ) : (
-                    <Card className="py-4 bg-gray-500" isPressable>
+                    <Card 
+                        className="py-4 bg-gray-500" 
+                        isPressable
+                        onPress={playerPickerModal.onOpen}
+                    >
                         <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-                            <p className="text-tiny uppercase font-bold text-left">Player Name</p>
-                            <small className="text-default-500">Value</small>
-                            <h4 className="font-bold text-large">+21</h4>
+                            <p className="text-tiny uppercase font-bold text-left">{cellValue.name}</p>
+                            <small className="text-default-500">{cellValue.elo.toFixed(2)}</small>
+                            <h4 className="font-bold text-large">+{cellValue.points.toFixed(2)}</h4>
                         </CardHeader>
                         <CardBody className="overflow-visible py-2">
                             <Image

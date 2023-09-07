@@ -10,38 +10,46 @@ export async function GET(
 
     // Get the leagueId and currentUser from the URL's search parameters
     const leagueId = url.searchParams.get('leagueId');
-    const currentUser = url.searchParams.get('currentUser');
 
-    if (!currentUser || type of currentUser !== "string" || currentUser !== actualUser?.id) {
-        return NextResponse.error();
-    };
+    if (!actualUser) {
+        return new Error;
+    }
 
-    const tournamentId = await prisma.tournament.findFirst({
+    const tournament = await prisma.tournament.findFirst({
         where: {
             active: true
-        },
-        include: {
-            id
         }
     });
-
+ 
     const userTeam = await prisma.team.findFirst({
         where: {
-            userId: currentUser,
+            userId: actualUser.id,
             leagueId: leagueId,
-            tournamentId: tournamentId,
+            tournamentId: tournament?.id,
         }
     });
     const userBudget = userTeam.budget;
 
-
-    const players = await prisma.tournamentPlayer.findMany({
+    const userTeamPlayers = await prisma.playerTeam.findMany({
         where: {
-            tournamentId: tournamentId
+            teamId: userTeam.id,
         }
     });
 
+
+    const players = await prisma.tournamentPlayer.findMany({
+        where: {
+            tournamentId: tournament?.id,
+            id: {
+                not: {
+                    in: userTeamPlayers.map(player => player.playerId)
+                }
+            }
+        },
+    });
+
     const validPlayers = players.filter(player => player.elo <= userBudget);
+    validPlayers.sort((a, b) => b.elo - a.elo);
     
-    return NextResponse.json(league);
+    return NextResponse.json(validPlayers);
 };

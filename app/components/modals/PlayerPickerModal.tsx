@@ -5,7 +5,7 @@ import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import { Field, FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Input, Select, SelectItem } from "@nextui-org/react";
+import { Input, Select, SelectItem, SelectedItems, Selection } from "@nextui-org/react";
 
 import usePlayerPickerModal from '../../hooks/usePlayerPickerModal';
 import Modal from './Modal';
@@ -18,15 +18,8 @@ const PlayerPickerModal = () => {
     const playerPickerModal = usePlayerPickerModal();
     const [isLoading, setIsLoading] = useState(false);
     const [buttonDisabled, setButtonDisabled] = useState(true);
-    const [playerId, setPlayerId] = useState("");
-
-    useEffect(() => {
-        if (playerId) {
-            setButtonDisabled(false);
-        } else {
-            setButtonDisabled(true);
-        }
-    }, [playerId]);
+    const [value, setValue] = React.useState<Selection>(new Set([]));
+    const [players, setPlayers] = useState([]);
 
     const { 
         handleSubmit,
@@ -44,11 +37,10 @@ const PlayerPickerModal = () => {
         let endpoint = '/api/players/tournamentPlayers';
 
         axios.get(endpoint, {params: {
-                                leagueId: selected,
-                                currentUser: currentUser?.id
+                                leagueId: selected
                             }})
             .then((res) => {
-                set(res.data);
+                setPlayers(res.data);
             })
             .catch((error) => {
                             // Check for the status code in the error response
@@ -64,55 +56,101 @@ const PlayerPickerModal = () => {
     }, [playerPickerModal.isOpen]);
 
 
-    // const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    //     if (buttonDisabled) return;
+    useEffect(() => {
+        console.log(value)
+        if (!value || value.size === 0) {
+            setButtonDisabled(true);
+        }
+        else {
+            setButtonDisabled(false);
+        }
+    }, [value]);
+
+
+    const onSubmit: SubmitHandler<FieldValues> = (data) => {
+        if (buttonDisabled || !selected) return;
         
-    //     // Construct the data to send
-    //     const postData = {
-    //         ...data,
-    //         name: leagueName,
-    //         format: Array.from(leagueType)[0]  // Convert Set to Array and get the first value
-    //     };
-    //     setIsLoading(true);
+        // Construct the data to send
+        const postData = {
+            ...data,
+            leagueId: selected
+        };
+        setIsLoading(true);
+        console.log(selected);
+        const endpoint = `/api/teams/${value.currentKey}`;
+        axios.post(endpoint, postData)
+            .then(() => {
+                toast.success('Player Added!');
+                router.refresh();
+                playerPickerModal.onClose();
 
-    //     axios.post('/api/leagues', postData)
-    //     .then(() => {
-    //         toast.success('League Created!');
-    //         router.refresh();
-    //         // reset();  // Uncomment if you have the reset function defined
-    //         leagueModal.onClose();
-    //     })
-    //     .catch(() => {
-    //         toast.error('Something went wrong.');
-    //     })
-    //     .finally(() => {
-    //         setIsLoading(false);
-    //     });
-    // }
-
-
+            })
+            .catch(() => {
+                toast.error('Something went wrong.');
+            })
+            .finally(() => {
+                setIsLoading(false);
+        });
+    }
 
     const bodyContent = (
-        <div className=" flex flex-col gap-4">
+        <div className="flex flex-col gap-4">
             <Heading 
-                title="Create a league to start Playing!"
+                title="Select a player to add to your team"
             />
             <Select
-                label="League Format"
-                variant="flat"
-                radius='sm'
-                placeholder="Select a league format"
-                selectedKeys={leagueType}
-                className="max-w-xs bg-background/30 rounded-xl"
-                onChange={handleLeagueTypeChange}
-                color='default'
-                isRequired
+                items={players}
+                label="Select player"
+                selectedKeys={value}
+                onSelectionChange={setValue}
+                className="max-w-xs"
+                classNames={{
+                    label: "group-data-[filled=true]:-translate-y-5",
+                    trigger: "min-h-unit-16",
+                    listboxWrapper: "max-h-[400px]",
+                }}
+                listboxProps={{
+                    itemClasses: {
+                    base: [
+                        "rounded-md",
+                        "text-default-500",
+                        "transition-opacity",
+                        "data-[hover=true]:text-foreground",
+                        "data-[hover=true]:bg-default-100",
+                        "dark:data-[hover=true]:bg-default-50",
+                        "data-[selectable=true]:focus:bg-default-50",
+                        "data-[pressed=true]:opacity-70",
+                        "data-[focus-visible=true]:ring-default-500",
+                    ],
+                    },
+                }}
+                popoverProps={{
+                    classNames: {
+                        base: "p-0 border-small border-divider bg-background",
+                        arrow: "bg-default-200",
+                    },
+                }}
+                renderValue={(players: SelectedItems<any>) => {
+                    return players.map((player) => (
+                        <div key={player.key} className="flex items-center gap-2">
+                            <div className="flex flex-col">
+                                <span>{player.data.name}</span>
+                                <span className="text-default-500 text-tiny">({player.data.elo.toFixed(2)})</span>
+                            </div>
+                        </div>
+                    ));
+                }}
             >
-                {leagueTypes.map((league) => (
-                    <SelectItem key={league.value} value={league.value}>
-                        {league.label}
+                {(player) => (
+                    <SelectItem key={player.id} textValue={player.name}>
+                        <div className="flex gap-2 items-center">
+                            <div className="flex flex-col">
+                                <span className="text-small">{player.name}</span>
+                                <span className="text-tiny text-default-400">{player.elo.toFixed(2)}</span>
+                            </div>
+                        </div>
                     </SelectItem>
-                ))}
+                )}
             </Select>
         </div>
     );
@@ -121,10 +159,10 @@ const PlayerPickerModal = () => {
         <div>
             <Modal 
                 disabled={isLoading}
-                isOpen={leagueModal.isOpen}
-                title="Create League"
-                actionLabel="Create"
-                onClose={leagueModal.onClose}
+                isOpen={playerPickerModal.isOpen}
+                title="Pick a Player"
+                actionLabel="PlayerPicker"
+                onClose={playerPickerModal.onClose}
                 body={bodyContent}
                 onSubmit={handleSubmit(onSubmit)}
                 buttonDisabled={buttonDisabled}

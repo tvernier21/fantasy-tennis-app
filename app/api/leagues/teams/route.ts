@@ -72,6 +72,12 @@ export async function GET(
         }
     });
 
+    const tournamentPlayers = await prisma.tournamentPlayer.findMany({
+        where: {
+            tournamentId: currTournament?.id
+        }
+    });
+
     const users = await prisma.user.findMany({
         where: {
             id: {
@@ -79,13 +85,7 @@ export async function GET(
             }
         }
     });
-
-    const tournamentPlayers = await prisma.tournamentPlayer.findMany({
-        where: {
-            tournamentId: currTournament?.id
-        }
-    });
-
+    
     // create an object, mapping users.name to teams
     const userTeams = {};
     for (const team of teams) {
@@ -93,13 +93,11 @@ export async function GET(
         const playersTeam = playersTeams.filter(playerTeam => playerTeam.teamId === team.id);
         const players = tournamentPlayers.filter(tournamentPlayer => 
                                                     playersTeam.find(playerTeam => 
-                                                        playerTeam.playerId === tournamentPlayer.playerId));
+                                                        playerTeam.playerId === tournamentPlayer.id));
 
         // sort players on elo, high to low
         players.sort((a, b) => b.elo - a.elo);
         userTeams[user.name] = players;
     }
-    console.log(userTeams)
-
-    return NextResponse.json(userTeams);
-}
+    return NextResponse.json(userTeams)
+};

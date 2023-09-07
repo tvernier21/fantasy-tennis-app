@@ -43,8 +43,9 @@ def activateTournamentPlayers(LINK, tournament, players_db, tournamentPlayers_db
                 player_driver.close()
             
             tournamentPlayer = {
-                "player_id": player['_id'],
-                "tournament_id": tournament['_id'],
+                "playerId": player['_id'],
+                "tournamentId": tournament['_id'],
+                "name": player['name'],
                 "elo": player['elo'],
                 "points": 0,
                 "active": True,
@@ -104,10 +105,11 @@ if __name__ == "__main__":
 
     tournament = tournaments_db.find_one({"_id": ObjectId(TOURNAMENT_ID)})
 
-    # activateTournamentPlayers(LINK, tournament, players_db)\
+    tournamentPlayers_db.delete_many({})
+    activateTournamentPlayers(LINK, tournament, players_db, tournamentPlayers_db)
     
-    userLeague_db = db["UserLeague"]
-    teams_db = db["Team"]
-    activateTournamentTeams(tournament, teams_db, userLeague_db)
+    # userLeague_db = db["UserLeague"]
+    # teams_db = db["Team"]
+    # activateTournamentTeams(tournament, teams_db, userLeague_db)
 
     client.close()

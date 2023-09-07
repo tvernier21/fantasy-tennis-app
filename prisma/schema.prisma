@@ -76,8 +76,6 @@ model UserLeague {
 }
 
 
-
-
 model Team {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   userId        String   @db.ObjectId
@@ -145,6 +143,7 @@ model TournamentPlayer {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   playerId     String   @db.ObjectId
   tournamentId String   @db.ObjectId
+  name         String
   elo          Float
   points       Float    @default(0)
   active       Boolean  @default(true)
