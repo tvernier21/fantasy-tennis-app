@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import {
     Card, 
     CardHeader, 
+    CardFooter,
     CardBody, 
     Image, 
     Table,
@@ -13,10 +14,12 @@ import {
     TableBody,
     TableRow,
     TableCell,
-    Spinner
+    Spinner,
+    Button
 } from "@nextui-org/react";
 import axios from "axios";
 import { toast } from 'react-hot-toast';
+import { useRouter } from "next/navigation";
 
 import usePlayerPickerModal from "../../../hooks/usePlayerPickerModal";
 import { SafeUser } from "../../../types";
@@ -31,10 +34,12 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
     currentUser,
 }) => {
     const playerPickerModal = usePlayerPickerModal();
+    const router = useRouter();
     const selected = useSearchParams()?.get("selected");
     const numPlayers = 5;
     const [teams, setTeams] = useState<any>({});
-    const [structuredTeams, setStructuredTeams] = useState<any[]>([]);
+    const [players, setPlayers] = useState<any[]>([]);
+    const [structuredPlayers, setStructuredPlayers] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(false);
 
 
@@ -53,7 +58,7 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
         return createPlayerColumns(numPlayers);
     }, [numPlayers]);
 
-    // example teams data. instead call api to get this data
+    // Fetching each teams players
     useEffect(() => {
         if (!selected || !currentUser) return;
 
@@ -61,8 +66,8 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
 
         setIsLoading(true);   
         let endpoint = '/api/leagues/teams/';
-            
-        // Fetch the data
+             
+        // Fetch players, Maps (user.name => [{player1}, {player2}, ...]}])
         axios.get(
             endpoint, 
             {params: {
@@ -70,7 +75,8 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
                 currentUser: currentUser?.id
         }})
             .then((res) => {
-                setTeams(res.data);
+                setPlayers(res.data.userPlayers);
+                setTeams(res.data.userTeams);
             })
             .catch((error) => {
                             // Check for the status code in the error response
@@ -85,55 +91,91 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
         });
     }, [selected, currentUser, playerPickerModal.isOpen]);
 
+    // Structuring the teams ==> TODO: merge with the first useeffect
     useEffect(() => {
-        const tmpStructuredTeams: any[] = [];
+        const tmpStructuredPlayers: any[] = [];
 
-        Object.entries(teams).forEach(([teamName, teamMembers]) => {
+        Object.entries(players).forEach(([teamName, teamPlayers]) => {
             const teamMap: { [key: string]: any } = {};
             teamMap[columns[0].uid] = teamName;
 
             for (let i = 1; i < columns.length; i++) {
-                if (i - 1 < teamMembers.length) {
-                    teamMap[columns[i].uid] = teamMembers[i - 1];
+                if (i - 1 < teamPlayers.length) {
+                    teamMap[columns[i].uid] = teamPlayers[i - 1];
                 } else {
                     teamMap[columns[i].uid] = null;
                 }
             }
 
             if (teamName === currentUser?.name) {
-                tmpStructuredTeams.unshift(teamMap);
+                tmpStructuredPlayers.unshift(teamMap);
             } else {
-                tmpStructuredTeams.push(teamMap);
+                tmpStructuredPlayers.push(teamMap);
             }
                 
         });
 
-        if (JSON.stringify(structuredTeams) !== JSON.stringify(tmpStructuredTeams)) {
-            setStructuredTeams(tmpStructuredTeams);
+        if (JSON.stringify(structuredPlayers) !== JSON.stringify(tmpStructuredPlayers)) {
+            setStructuredPlayers(tmpStructuredPlayers);
             // setIsLoading(false);
         }
-    }, [teams, columns]);
+    }, [players, columns]);
+
+    // Define the API call function
+    // const handlePlayerRemoval = () => {
+    //     if (!selected) return;
+
+    //     const oldPlayerId = playerPickerModal.currPlayer ? playerPickerModal.currPlayer.id : " ";
+    //     const oldPlayerCost = playerPickerModal.currPlayer ? playerPickerModal.currPlayer.elo : 0;
+
+    //     // Construct the data to send
+    //     const postData = {
+    //         leagueId: selected,
+    //         oldPlayerId: oldPlayerId,
+    //         oldPlayerCost: oldPlayerCost,
+    //     };
+
+    //     setIsLoading(true);
+    //     const endpoint = `/api/teams/remove`;
+    //     axios.post(endpoint, postData)
+    //         .then(() => {
+    //             toast.success('Player Added!');
+    //             router.refresh();
+    //             playerPickerModal.onClose();
+    //         })
+    //         .catch(() => {
+    //             toast.error('Something went wrong.');
+    //         })
+    //         .finally(() => {
+    //             setIsLoading(false);
+    //     });
+    // }
 
 
     const renderCell = React.useCallback((team: any, columnKey: React.Key) => {
         const cellValue = team[columnKey];
         const userTeam = team['user'] == currentUser?.name;
+
+        const teamData = teams[team['user']]
+        console.log("TeamData", teamData.budget)
     
         if (columnKey === "user") {
             return (
-                <Card className="py-4 bg-gray-400">
-                    <CardHeader className="pb- px-4 flex-col items-center">
-                        <h4 className="font-bold text-large justify-center">{cellValue}</h4>
-                    </CardHeader>
-                    <CardBody className="overflow-visible py-2 flex-col items-center">
+                <Card className="bg-gray-400 w-[150px]">
+                    <CardBody className="overflow-visible p-0">
                         <Image
-                            alt="Card background"
-                            className="object-cover rounded-xl"
+                            shadow="sm"
+                            radius="lg"
+                            width="100%"
+                            alt="card background"
+                            className="w-full object-cover h-[140px]"
                             src={currentUser?.image? currentUser.image : "/images/placeholder.png"}
-                            width={100}
-                            height={100}
                         />
                     </CardBody>
+                    <CardFooter className="text-small justify-between">
+                        <b>{cellValue}</b>
+                        <p className="">{teamData.budget.toFixed(2)}</p>
+                    </CardFooter>
                 </Card>
             );
         } else if(typeof columnKey === 'string' && columnKey.startsWith("player")) {
@@ -166,11 +208,11 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
                         onPress={userTeam ? () => playerPickerModal.onOpenWithPlayer(cellValue) : () => {}} 
                     >
                         <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-                            <p className="text-tiny uppercase font-bold text-left">{cellValue.name}</p>
+                            <p className="text-tiny uppercase font-bold text-left overflow-hidden whitespace-nowrap">{cellValue.name}</p>
                             <small className="text-default-500">{cellValue.elo.toFixed(2)}</small>
                             <h4 className="font-bold text-large">+{cellValue.points.toFixed(2)}</h4>
                         </CardHeader>
-                        <CardBody className="overflow-visible py-2">
+                        <CardBody className="overflow-visible py-2 pt-2 pb-2">
                             <Image
                                 alt="Card background"
                                 className="object-cover rounded-xl"
@@ -179,13 +221,22 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
                                 height={100}
                             />
                         </CardBody>
+                        <CardFooter className="flex justify-center pt-2">
+                            <Button
+                                radius="full"
+                                size="sm"
+                                onPress={() => {}}
+                            >
+                                Remove Player    
+                            </Button>
+                        </CardFooter>
                     </Card>
                 )
             );
         } else {
             return cellValue;
         }
-    }, []);
+    }, [teams]);
     
 
     return (
@@ -210,7 +261,7 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
                 </TableHeader>
                 <TableBody 
                     isLoading={isLoading}
-                    items={structuredTeams}
+                    items={structuredPlayers}
                     loadingContent={<Spinner />}
                     >
                     {(item) => (
