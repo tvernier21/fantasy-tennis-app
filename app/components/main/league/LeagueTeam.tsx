@@ -116,7 +116,7 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
 
     const renderCell = React.useCallback((team: any, columnKey: React.Key) => {
         const cellValue = team[columnKey];
-        console.log(cellValue)
+        const userTeam = team['user'] == currentUser?.name;
     
         if (columnKey === "user") {
             return (
@@ -141,7 +141,7 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
                     <Card
                         className="py-4 bg-gray-500" 
                         isPressable
-                        onPress={playerPickerModal.onOpen} 
+                        onPress={userTeam ? playerPickerModal.onOpen : () => {}} 
                     >
                         <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
                             <p className="text-tiny uppercase font-bold text-left pb-2">Select Player</p>
@@ -162,7 +162,7 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
                     <Card 
                         className="py-4 bg-gray-500" 
                         isPressable
-                        onPress={playerPickerModal.onOpen}
+                        onPress={userTeam ? playerPickerModal.onOpen : () => {}} 
                     >
                         <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
                             <p className="text-tiny uppercase font-bold text-left">{cellValue.name}</p>
