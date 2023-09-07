@@ -99,7 +99,12 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
                 }
             }
 
-            tmpStructuredTeams.push(teamMap);
+            if (teamName === currentUser?.name) {
+                tmpStructuredTeams.unshift(teamMap);
+            } else {
+                tmpStructuredTeams.push(teamMap);
+            }
+                
         });
 
         if (JSON.stringify(structuredTeams) !== JSON.stringify(tmpStructuredTeams)) {
@@ -107,8 +112,6 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
             // setIsLoading(false);
         }
     }, [teams, columns]);
-
-    console.log(playerPickerModal.isOpen);
 
 
     const renderCell = React.useCallback((team: any, columnKey: React.Key) => {
