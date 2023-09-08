@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from "react"
+import React, { useEffect, useMemo, useState, useCallback } from "react"
 import { useSearchParams } from 'next/navigation';
 import {
     Card, 
@@ -34,13 +34,13 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
     currentUser,
 }) => {
     const playerPickerModal = usePlayerPickerModal();
-    const router = useRouter();
     const selected = useSearchParams()?.get("selected");
     const numPlayers = 5;
     const [teams, setTeams] = useState<any>({});
     const [players, setPlayers] = useState<any[]>([]);
     const [structuredPlayers, setStructuredPlayers] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [playerRemoved, setPlayerRemoved] = useState(false);
 
 
     function createPlayerColumns(numPlayers: number): { name: string, uid: string }[] {
@@ -63,6 +63,8 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
         if (!selected || !currentUser) return;
 
         if (playerPickerModal.isOpen) return;
+
+        if (playerRemoved) return;
 
         setIsLoading(true);   
         let endpoint = '/api/leagues/teams/';
@@ -89,7 +91,7 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
             .finally(() => {
                 setIsLoading(false);
         });
-    }, [selected, currentUser, playerPickerModal.isOpen]);
+    }, [selected, currentUser, playerPickerModal.isOpen, playerRemoved]);
 
     // Structuring the teams ==> TODO: merge with the first useeffect
     useEffect(() => {
@@ -122,42 +124,32 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
     }, [players, columns]);
 
     // Define the API call function
-    // const handlePlayerRemoval = () => {
-    //     if (!selected) return;
-
-    //     const oldPlayerId = playerPickerModal.currPlayer ? playerPickerModal.currPlayer.id : " ";
-    //     const oldPlayerCost = playerPickerModal.currPlayer ? playerPickerModal.currPlayer.elo : 0;
-
-    //     // Construct the data to send
-    //     const postData = {
-    //         leagueId: selected,
-    //         oldPlayerId: oldPlayerId,
-    //         oldPlayerCost: oldPlayerCost,
-    //     };
-
-    //     setIsLoading(true);
-    //     const endpoint = `/api/teams/remove`;
-    //     axios.post(endpoint, postData)
-    //         .then(() => {
-    //             toast.success('Player Added!');
-    //             router.refresh();
-    //             playerPickerModal.onClose();
-    //         })
-    //         .catch(() => {
-    //             toast.error('Something went wrong.');
-    //         })
-    //         .finally(() => {
-    //             setIsLoading(false);
-    //     });
-    // }
+    const handlePlayerRemoval = useCallback((teamId: string, playerId: string) => {
+        // Construct the data to send
+        const postData = {
+            teamId: teamId,
+            playerId: playerId,
+        };
+    
+        setPlayerRemoved(true);
+        const endpoint = `/api/teams/removePlayer`;
+        axios.post(endpoint, postData)
+            .then(() => {
+                toast.success('Player Removed!');
+            })
+            .catch(() => {
+                toast.error('Something went wrong.');
+            })
+            .finally(() => {
+                setPlayerRemoved(false);
+        });
+    }, []);
 
 
-    const renderCell = React.useCallback((team: any, columnKey: React.Key) => {
+    const renderCell = useCallback((team: any, columnKey: React.Key) => {
         const cellValue = team[columnKey];
         const userTeam = team['user'] == currentUser?.name;
-
-        const teamData = teams[team['user']]
-        console.log("TeamData", teamData.budget)
+        const teamData = teams[team['user']];
     
         if (columnKey === "user") {
             return (
@@ -225,7 +217,7 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
                             <Button
                                 radius="full"
                                 size="sm"
-                                onPress={() => {}}
+                                onPress={() => handlePlayerRemoval(teamData.id, cellValue.id)}
                             >
                                 Remove Player    
                             </Button>

@@ -51,14 +51,16 @@ export async function POST(
         },
     });
 
-    const oldPlayerTeam = await prisma.playerTeam.delete({
-        where: {
-            teamId_playerId: {
-                teamId: teamId,
-                playerId: oldPlayerId
+    if (oldPlayerId !== "") {
+        const oldPlayerTeam = await prisma.playerTeam.delete({
+            where: {
+                teamId_playerId: {
+                    teamId: teamId,
+                    playerId: oldPlayerId
+                }
             }
-        }
-    });
+        });
+    }
 
     const tournament = await prisma.team.findFirst({
         where: {
@@ -74,12 +76,10 @@ export async function POST(
         where: {
             id: playerId,
             tournamentId: tournamentId
-        },
-        select: {
-            elo: true
         }
     });
     const playerElo = player?.elo;
+    const decrementValue = playerElo - oldPlayerCost;
 
     const updatedteam = await prisma.team.update({
         where: {
@@ -87,7 +87,7 @@ export async function POST(
         },
         data: {
             budget: {
-                decrement: playerElo - oldPlayerCost
+                decrement: decrementValue
             },
             updatedAt: new Date()
         }

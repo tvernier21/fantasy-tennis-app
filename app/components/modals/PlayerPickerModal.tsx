@@ -71,7 +71,7 @@ const PlayerPickerModal = () => {
     const onSubmit: SubmitHandler<FieldValues> = (data) => {
         if (buttonDisabled || !selected) return;
 
-        const oldPlayerId = playerPickerModal.currPlayer ? playerPickerModal.currPlayer.id : " ";
+        const oldPlayerId = playerPickerModal.currPlayer ? playerPickerModal.currPlayer.id : "";
         const oldPlayerCost = playerPickerModal.currPlayer ? playerPickerModal.currPlayer.elo : 0
         
         // Construct the data to send
