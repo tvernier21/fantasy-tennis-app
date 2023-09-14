@@ -3,7 +3,6 @@
 import React from "react"
 import { usePathname } from 'next/navigation';
 
-import HomePage from "./HomePage"
 import SideBar from "./sidebar/SideBar"
 import Content from "./content/Contents"
 
@@ -29,7 +28,7 @@ const MainPage: React.FC<MainPageProps> = ({
                 </div>
             </div>
         </div>
-    );1
+    );
     
 }
 

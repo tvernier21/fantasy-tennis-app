@@ -59,6 +59,7 @@ const LeagueHome: React.FC<LeagueHomeProps> = ({
             Invite: 
             <Input
                 className="bg-zinc-300/50 border-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0"
+                readOnly
                 value={inviteUrl}
             />
             <Button onClick={onCopy} size="icon">

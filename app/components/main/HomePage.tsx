@@ -5,8 +5,15 @@ import React from 'react';
 import Heading from "@/app/components/Heading";
 import useLoginModal from "@/app/hooks/useLoginModal";
 import useRegisterModal from "@/app/hooks/useRegisterModal";
+import { SafeUser } from '@/app/types';
 
-const HomePage = () => {
+interface HomePageProps {
+    currentUser: SafeUser | null | undefined;
+}
+
+const HomePage: React.FC<HomePageProps> = ({
+    currentUser
+}) => {
     const loginModal = useLoginModal();
     const registerModal = useRegisterModal();
 
@@ -15,8 +22,8 @@ const HomePage = () => {
             <div className='flex flex-col justify-center'>
                 <Heading 
                     center
-                    title="Welcome to SmashIt"
-                    subtitle="SmashIt is a fantasy tennis game where you can create your own team of tennis players and compete against other players."
+                    title="Welcome to BgakOClock Fantasy Tennis"
+                    subtitle="BgakOClock is a fantasy tennis game where you draft a team of tennis players to compete against other players."
                 />
                 <div className="text-neutral-400 text-center mt-4 font-light">
                     <div className="justify-center flex flex-row items-center gap-2">
@@ -24,8 +31,8 @@ const HomePage = () => {
                             Get Started by
                         </div>
                         <div 
-                            className="text-neutral-300 cursor-pointer hover:underline"
-                            onClick={() => registerModal.onOpen()}
+                            className={`text-neutral-300 ${currentUser ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:underline'}`}
+                            onClick={currentUser ? undefined : () => registerModal.onOpen()}
                         >
                             Registering  
                         </div>
@@ -33,8 +40,8 @@ const HomePage = () => {
                             or
                         </div>
                         <div 
-                            className="text-neutral-300 cursor-pointer hover:underline"
-                            onClick={() => loginModal.onOpen()}
+                            className={`text-neutral-300 ${currentUser ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:underline'}`}
+                            onClick={currentUser ? undefined : () => loginModal.onOpen()}
                         >
                             Logging In  
                         </div>

@@ -72,7 +72,7 @@ const SidebarList: React.FC<SidebarListProps> = ({
                 </div>
             ) : (
                 <div>
-                    <HomePage />
+                    <HomePage currentUser={currentUser}/>
                 </div>
             )}
         </div>

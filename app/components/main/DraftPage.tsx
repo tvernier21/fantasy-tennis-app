@@ -53,7 +53,7 @@ const DraftPage: React.FC<DraftPageProps> = ({
 
     if (!currentUser) {
         return (
-            <HomePage />
+            <HomePage currentUser={currentUser} />
         )
     }
 
