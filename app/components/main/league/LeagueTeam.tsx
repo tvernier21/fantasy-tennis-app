@@ -41,6 +41,7 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
     const [structuredPlayers, setStructuredPlayers] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [playerRemoved, setPlayerRemoved] = useState(false);
+    const [tournament, setTournament] = useState<any>(null);
 
 
     function createPlayerColumns(numPlayers: number): { name: string, uid: string }[] {

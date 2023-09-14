@@ -178,6 +178,7 @@ model Tournament {
   img           String?
   link          String?
   active        Boolean
+  started       Boolean
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
