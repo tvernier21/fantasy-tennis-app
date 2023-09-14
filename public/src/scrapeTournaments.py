@@ -29,6 +29,11 @@ soup = BeautifulSoup(driver.page_source, "html.parser")
 table = soup.find("table", {"class": "results-archive-table mega-table"})
 tournaments = table.find_all("tr", {"class": "tourney-result"})
 
+# Connect to MongoDB
+client = MongoClient(DATABASE_URL)
+db = client["test"]
+collection = db["Tournament"]
+
 """ Write code to read from database to merge the data """
 
 difficulty_map = {
@@ -40,6 +45,7 @@ difficulty_map = {
 }
 
 year = 2005
+year = 2023
 tournament_categories = ["ch", "atpgs"]
 tournaments_data = []
 while year <= 2023:
@@ -82,6 +88,17 @@ while year <= 2023:
             except:
                 difficulty = 3
 
+            # if date is greater than 8/22/2023 and less than 9/01/2023, skip
+            if date > datetime(2023, 8, 22) and date < datetime(2023, 9, 1):
+                print(link)
+                collection.update_one({"name": name, "date": date}, {"$set": {
+                    "link": link,
+                    "updatedAt": datetime.now()
+                }})
+                continue
+            else:
+                continue
+
             tournament = {
                 "name": name,
                 "location": location,
@@ -100,14 +117,9 @@ while year <= 2023:
 driver.quit()
 print("Driver Closed")
 
-# Connect to MongoDB
-client = MongoClient(DATABASE_URL)
-db = client["test"]
-collection = db["Tournament"]
-
-result = collection.insert_many(tournaments_data)
-print(result.acknowledged)
-print(len(result.inserted_ids))
+# result = collection.insert_many(tournaments_data)
+# print(result.acknowledged)
+# print(len(result.inserted_ids))
 
 # Close connection
 client.close()

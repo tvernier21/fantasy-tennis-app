@@ -68,8 +68,11 @@ def tag_content_to_list(tag):
                 parts.append(stripped_text)
     return parts
 
+# delete matches after 09/15/2023
+matches_db.delete_many({"date": {"$gt": datetime(2023, 8, 15)}})
+
 # find tournaments from db that are difficulty > 1 and past a certain date
-tournaments = tournaments_db.find({"difficulty": {"$gt": 1}, "date": {"$gt": datetime(2020, 1, 1)}},
+tournaments = tournaments_db.find({"difficulty": {"$gt": 1}, "date": {"$gt": datetime(2023, 8, 15)}},
                                   {"_id": 1, "link": 1, "date": 1})
 
 tournaments = list(tournaments)

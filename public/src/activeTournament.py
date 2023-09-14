@@ -86,6 +86,10 @@ def activateTournamentTeams(tournament, teams_db, userLeague_db):
             teams_db.insert_one(new_team)
             print("creating new team")
 
+
+def updateTournamentPlayers():
+    return
+
                             
 
 

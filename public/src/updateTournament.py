@@ -1,12 +1,27 @@
 from pymongo import MongoClient
 from dotenv import load_dotenv
 from bson.objectid import ObjectId
+from datetime import datetime
 import os
 
 
 def updateActive(tournaments, activeId):
-    tournaments.update_many({}, {"$set": {"active": False}})
-    tournaments.update_one({"_id": ObjectId(activeId)}, {"$set": {"active": True}})
+    tournaments.update_many({}, {"$set": {
+        "active": False,
+        "started": False,
+        "updatedAt": datetime.now()
+    }})
+    tournaments.update_one({"_id": ObjectId(activeId)}, {"$set": {
+        "active": True,
+        "started": True,
+    }})
+    return
+
+def updateLinks(tournaments, activeId, links):
+    tournaments.update_one({"_id": ObjectId(activeId)}, {"$set": {
+        "links": links,
+        "updatedAt": datetime.now()
+    }})
     return
 
 
