@@ -1,6 +1,7 @@
 import prisma from "@/app/libs/prismadb";
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import { NextResponse } from "next/server";
+import { v4 as uuidv4 } from "uuid";
 
 export async function POST(request: Request) {
     const currentUser = await getCurrentUser();
@@ -14,6 +15,7 @@ export async function POST(request: Request) {
 
     const league = await prisma.league.create({
         data: {
+            inviteCode: uuidv4(),
             name: name,
             format: format,
             img: "/images/court.png",
@@ -25,7 +27,7 @@ export async function POST(request: Request) {
             }
         },
         include: {
-            users: true  // Include UserLeague entries in the response
+            users: true,  // Include UserLeague entries in the response
         }
     });
 

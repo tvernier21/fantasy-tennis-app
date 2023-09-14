@@ -3,7 +3,7 @@
 import React, { useEffect } from "react"
 import axios from "axios";
 import { toast } from 'react-hot-toast';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { Button, Spinner } from "@nextui-org/react";
 
 import useLeagueModal from "../../hooks/useLeagueModal";
@@ -22,6 +22,7 @@ const DraftPage: React.FC<DraftPageProps> = ({
 }) => {
     const pathname = usePathname();
     const category = pathname ? pathname.split('/')[1] : null;
+    const selected = useSearchParams()?.get("selected");
     const [isLoading, setIsLoading] = React.useState(false);
     const [leagues, setLeagues] = React.useState<any>(null);
     const leagueModal = useLeagueModal();
@@ -96,10 +97,20 @@ const DraftPage: React.FC<DraftPageProps> = ({
                     </div>
                 </div>
                 <div className="md:w-4/5 w-full h-screen bg-gray-700 rounded-r-xl overflow-y-auto"> {/* Added rounded right corner */}
-                    <DataPage    
-                        category={category}
-                        currentUser={currentUser}
-                    />
+                    {selected ? (
+                        <DataPage    
+                            category={category}
+                            currentUser={currentUser}
+                        />
+                    ) : (
+                        <div className="justify-center pt-10">
+                            <Heading
+                                title="Select a League"
+                                subtitle="Select or Create league from the sidebar to get started"
+                                center
+                            />    
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

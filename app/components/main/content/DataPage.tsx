@@ -8,7 +8,7 @@ import {Tabs, Tab, Card, CardBody, CardHeader} from "@nextui-org/react";
 import EmptyState from "../../EmptyState";
 import ResultsPage from "./ResultsPage";
 import { SafeUser } from "@/app/types";
-import LeagueLeaderboard from "../league/LeagueLeaderboard";
+import LeagueHome from "../league/LeagueHome";
 import LeagueTeam from "../league/LeagueTeam";
 
 interface DataPageProps {
@@ -50,8 +50,8 @@ const tournamentTabs = [
 
 const leagueTabs = [
     {
-        id: "leaderboard",
-        value: "Leaderboards",
+        id: "home",
+        value: "Home",
         desc: `league home tab`,
     },
     {
@@ -101,8 +101,8 @@ const DataPage: React.FC<DataPageProps> = ({
                                 <ResultsPage
                                     category={category}
                                 />
-                            ) : item.id === "leaderboards" ? (
-                                <LeagueLeaderboard currentUser={currentUser} />
+                            ) : item.id === "home" ? (
+                                <LeagueHome currentUser={currentUser} />
                             ) : item.id === "teams" ? (
                                 <LeagueTeam currentUser={currentUser} />
                             ) : (
