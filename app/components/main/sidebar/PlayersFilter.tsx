@@ -36,7 +36,8 @@ const PlayersFilter = () => {
         }, { skipNull: true });
 
         router.push(url);
-    }, [router, params]);
+    }, [router, params, pathname]);
+
     const handleAge = useCallback(({min, max}: {min: number, max: number}) => {
         let currentQuery = {};
         let basePath = '/'
@@ -60,7 +61,7 @@ const PlayersFilter = () => {
         }, { skipNull: true });
 
         router.push(url);
-    }, [router, params]);
+    }, [router, params, pathname]);
 
 
     return (

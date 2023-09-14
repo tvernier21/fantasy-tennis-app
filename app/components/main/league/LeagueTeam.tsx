@@ -122,7 +122,7 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
             setStructuredPlayers(tmpStructuredPlayers);
             // setIsLoading(false);
         }
-    }, [players, columns]);
+    }, [players, columns, currentUser, structuredPlayers]);
 
     // Define the API call function
     const handlePlayerRemoval = useCallback((teamId: string, playerId: string) => {
@@ -229,7 +229,7 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
         } else {
             return cellValue;
         }
-    }, [teams]);
+    }, [teams, currentUser, playerPickerModal, handlePlayerRemoval]);
     
 
     return (

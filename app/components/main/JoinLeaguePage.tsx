@@ -110,6 +110,7 @@ const JoinLeaguePage: React.FC<JoinLeaguePageProps> = ({
                         </CardHeader>
                         <CardBody className="overflow-visible py-2">
                             <Image
+                                alt="League Image"
                                 src={leagueImg ? leagueImg : "/images/court.png"}
                             />
                         </CardBody>

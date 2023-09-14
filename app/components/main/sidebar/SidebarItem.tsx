@@ -55,7 +55,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         }, { skipNull: true });
 
         router.push(url);
-    }, [id, router, params]);
+    }, [id, router, params, pathname]);
 
     return (
         <div 

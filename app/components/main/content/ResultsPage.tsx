@@ -72,7 +72,7 @@ const MatchesPage: React.FC<MatchesPageProps> = ({
         const end = start + rowsPerPage;
 
         return (matches ? matches.slice(start, end) : []);
-    }, [page, matches]);
+    }, [page, matches, rowsPerPage]);
     // }
 
     return(

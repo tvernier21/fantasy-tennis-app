@@ -55,7 +55,7 @@ const PlayerPickerModal = () => {
             .finally(() => {
                 setIsLoading(false);
         });
-    }, [playerPickerModal.isOpen, playerPickerModal.currPlayer]);
+    }, [playerPickerModal.isOpen, playerPickerModal.currPlayer, selected]);
 
 
     useEffect(() => {

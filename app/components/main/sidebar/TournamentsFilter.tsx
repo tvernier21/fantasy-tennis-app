@@ -35,7 +35,7 @@ const TournamentsFilter = () => {
         }, { skipNull: true });
 
         router.push(url);
-    }, [router, params]);
+    }, [router, params, pathname]);
 
 
     return (
