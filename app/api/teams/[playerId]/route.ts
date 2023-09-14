@@ -78,8 +78,10 @@ export async function POST(
             tournamentId: tournamentId
         }
     });
-    const playerElo = player?.elo;
-    const decrementValue = playerElo - oldPlayerCost;
+    if (!player) {
+        throw new Error('Player not found');
+    }
+    const decrementValue = player.elo - oldPlayerCost;
 
     const updatedteam = await prisma.team.update({
         where: {

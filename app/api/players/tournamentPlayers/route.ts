@@ -33,7 +33,10 @@ export async function GET(
             tournamentId: tournament?.id,
         }
     });
-    const userBudget = userTeam?.budget + currPlayerBudget;
+    if (!userTeam) {
+        throw new Error('User team not found');
+    }
+    const userBudget = userTeam.budget + currPlayerBudget;
 
     const userTeamPlayers = await prisma.playerTeam.findMany({
         where: {
