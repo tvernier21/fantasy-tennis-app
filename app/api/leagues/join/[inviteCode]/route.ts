@@ -45,5 +45,27 @@ export async function POST(
         }
     });
 
+    // Check if tournament active, create team if active
+    const tournament = await prisma.tournament.findFirst({
+        where: {
+            active: true
+        }
+    });
+    if (tournament) {
+        const newTeam = await prisma.team.create({
+            data: {
+                userId: currentUser.id,
+                leagueId: league.id,
+                tournamentId: tournament.id,
+                name: currentUser.name ? currentUser.name : currentUser.username,
+                points: 0,
+                budget: 10000,
+                teamCapacity: 0,
+                createdAt: new Date(),
+                updatedAt: new Date()
+            }
+        });
+    }
+
     return NextResponse.json(newUserLeague);
 }

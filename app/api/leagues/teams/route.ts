@@ -95,14 +95,15 @@ export async function GET(
         const players = tournamentPlayers.filter(tournamentPlayer => 
                                                     playersTeam.find(playerTeam => 
                                                         playerTeam.playerId === tournamentPlayer.id));
-
-        if (!user || !user.name) {
-            continue; // Skip this iteration
-        }
+        
+        const name = user?.name ? user.name : user?.username;
+        if (!name) {
+            continue;
+        } 
         // sort players on elo, high to low
         players.sort((a, b) => b.elo - a.elo);
-        userTeams.set(user.name, team);
-        userPlayers.set(user.name, players);
+        userTeams.set(name, team);
+        userPlayers.set(name, players);
     }
     
     // return userteams and userplayers
