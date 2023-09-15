@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
-import { Field, FieldValues, SubmitHandler, useForm } from 'react-hook-form';
+import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Input, Select, SelectItem, SelectedItems, Selection } from "@nextui-org/react";
+import { Select, SelectItem, SelectedItems, Selection } from "@nextui-org/react";
 
 import usePlayerPickerModal from '../../hooks/usePlayerPickerModal';
 import Modal from './Modal';
@@ -18,7 +18,7 @@ const PlayerPickerModal = () => {
     const playerPickerModal = usePlayerPickerModal();
     const [isLoading, setIsLoading] = useState(false);
     const [buttonDisabled, setButtonDisabled] = useState(true);
-    const [value, setValue] = React.useState<Selection>(new Set([]));
+    const [value, setValue] = useState<Selection>(new Set([]));
     const [players, setPlayers] = useState([]);
 
     const { 
@@ -59,7 +59,7 @@ const PlayerPickerModal = () => {
 
 
     useEffect(() => {
-        if (!value || value.size === 0) {
+        if (!value || (value as Set<any>).size === 0) {
             setButtonDisabled(true);
         }
         else {
@@ -74,28 +74,32 @@ const PlayerPickerModal = () => {
         const oldPlayerId = playerPickerModal.currPlayer ? playerPickerModal.currPlayer.id : "";
         const oldPlayerCost = playerPickerModal.currPlayer ? playerPickerModal.currPlayer.elo : 0
         
-        // Construct the data to send
-        const postData = {
-            ...data,
-            leagueId: selected,
-            oldPlayerId: oldPlayerId,
-            oldPlayerCost: oldPlayerCost,
-        };
-        setIsLoading(true);
-        const endpoint = `/api/teams/${value.currentKey}`;
-        axios.post(endpoint, postData)
-            .then(() => {
-                toast.success('Player Added!');
-                router.refresh();
-                playerPickerModal.onClose();
-
-            })
-            .catch(() => {
-                toast.error('Something went wrong.');
-            })
-            .finally(() => {
-                setIsLoading(false);
-        });
+        // Check if value has the property currentKey
+        if (typeof value !== "string" && "currentKey" in value) {
+            // Construct the data to send
+            const postData = {
+                ...data,
+                leagueId: selected,
+                oldPlayerId: oldPlayerId,
+                oldPlayerCost: oldPlayerCost,
+            };
+            setIsLoading(true);
+            const endpoint = `/api/teams/${value.currentKey}`;
+            axios.post(endpoint, postData)
+                .then(() => {
+                    toast.success('Player Added!');
+                    router.refresh();
+                    playerPickerModal.onClose();
+                })
+                .catch(() => {
+                    toast.error('Something went wrong.');
+                })
+                .finally(() => {
+                    setIsLoading(false);
+            });
+        } else {
+            toast.error('Invalid selection.');
+        }
     }
 
     const bodyContent = (

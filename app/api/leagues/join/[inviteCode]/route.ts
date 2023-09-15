@@ -13,12 +13,8 @@ export async function POST(
 ) {
     const { userId } = await request.json();
     const { inviteCode } = params;
-    console.log("inviteCode", inviteCode)
-    console.log("userId", userId)
 
     const currentUser = await getCurrentUser();
-
-    console.log("attempting to register new user to league")
     
     if (!currentUser) {
         return NextResponse.error();

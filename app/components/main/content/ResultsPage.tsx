@@ -44,7 +44,6 @@ const MatchesPage: React.FC<MatchesPageProps> = ({
         } else if (category === 'players') {
             endpoint = `/api/matches/players/${selected}`;
         } else {
-            console.error("Invalid category");
             return;
         }
             
@@ -107,7 +106,7 @@ const MatchesPage: React.FC<MatchesPageProps> = ({
                 items={items}
                 loadingContent={<Spinner />}
             >
-                {(item) => (
+                {(item: any) => (
                     <TableRow key={item.id}>
                         {(columnKey) => <TableCell>
                                             {columnKey === 'winner_name' && item.winnerId === selected ? (

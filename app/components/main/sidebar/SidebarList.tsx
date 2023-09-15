@@ -26,7 +26,7 @@ const SidebarList: React.FC<SidebarListProps> = ({
         <div>
             {category === 'players' ? (
                 <div>
-                    {data?.map((player, i) => (
+                    {data?.map((player: any, i: number) => (
                         <div className="mb-2 ml-2 mr-2" key={i}>
                             <SidebarItem 
                                 id={player.id}
@@ -42,7 +42,7 @@ const SidebarList: React.FC<SidebarListProps> = ({
                 </div>
             ) : category === 'tournaments' ? (
                 <div>
-                    {data?.map((tournament, i) => (
+                    {data?.map((tournament: any, i: any) => (
                         <div className="mb-2 ml-2 mr-2" key={i}>
                             <SidebarItem 
                                 id={tournament.id}
@@ -58,7 +58,7 @@ const SidebarList: React.FC<SidebarListProps> = ({
                 </div>
             ) : category == "leagues" ? (
                 <div>
-                    {data?.map((league, i) => (
+                    {data?.map((league: any, i: any) => (
                         <div className="mb-2 ml-2 mr-2" key={i}>
                             <SidebarItem 
                                 id={league.id}

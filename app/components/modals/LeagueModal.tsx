@@ -24,7 +24,7 @@ const LoginModal = () => {
     const [leagueName, setLeagueName] = useState("");
     const [leagueType, setLeagueType] = React.useState<Set<string>>(new Set());
 
-    const handleLeagueTypeChange = (e) => {
+    const handleLeagueTypeChange = (e: any) => {
         setLeagueType(new Set([e.target.value]));
     };
 

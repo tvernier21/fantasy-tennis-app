@@ -31,7 +31,6 @@ const Description: React.FC<DescriptionProps> = ({
         } else if (category === 'players') {
             endpoint = `/api/players/${selected}`;
         } else {
-            console.error("Invalid category");
             return;
         }
 
