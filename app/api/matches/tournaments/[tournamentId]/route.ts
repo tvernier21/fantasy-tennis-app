@@ -35,17 +35,17 @@ export async function GET(
         throw new Error('Invalid name');
     }
     
-    const tournament = await prisma.match.findMany({
+    const tournaments = await prisma.match.findMany({
         where: {
             tournamentId: tournamentId
         }
     });
 
-    tournament.sort((a, b) => {
+    tournaments.sort((a, b) => {
         const indexA = rounds.indexOf(a.round);
         const indexB = rounds.indexOf(b.round);
         return indexB - indexA;
     });
 
-    return NextResponse.json(tournament);
+    return NextResponse.json(tournaments);
 }

@@ -36,7 +36,6 @@ const MatchesPage: React.FC<MatchesPageProps> = ({
 
         setIsLoading(true);
         setMatches(null);
-        console.log("Selected ", selected);
         let endpoint = '';
         // Determine the endpoint based on the category
         if (category === 'tournaments') {
