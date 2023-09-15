@@ -11,7 +11,13 @@ interface TournamentsPageProps {
 }
 
 const TournamentsPage = async ({searchParams} : TournamentsPageProps) => {
-  const tournaments = await getTournaments(searchParams);
+  let tournaments: any[] = [];
+  if (Object.keys(searchParams).length !== 0) {
+      // searchParams is empty
+      tournaments = await getTournaments(searchParams);
+  } else {
+      tournaments = await getTournaments({lvlMax: 5, lvlMin: 0});
+  }
 
   return (
     <ClientOnly>

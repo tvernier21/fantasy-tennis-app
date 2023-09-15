@@ -11,7 +11,13 @@ interface PlayersPageProps {
 }
 
 const PlayersPage = async ({ searchParams }: PlayersPageProps) => {
-  const players = await getPlayers(searchParams)
+  let players: any[] = [];
+  if (Object.keys(searchParams).length !== 0) {
+      // searchParams is empty
+      players = await getPlayers(searchParams);
+  } else {
+      players = await getPlayers({eloMin: 1200, eloMax: 2500, ageMin: 15, ageMax: 40});
+  }
   
   return (
     <ClientOnly>
