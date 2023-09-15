@@ -19,12 +19,9 @@ import {
 } from "@nextui-org/react";
 import axios from "axios";
 import { toast } from 'react-hot-toast';
-import { useRouter } from "next/navigation";
 
 import usePlayerPickerModal from "../../../hooks/usePlayerPickerModal";
 import { SafeUser } from "../../../types";
-import Heading from "../../Heading";
-import { set } from "date-fns";
 
 interface LeagueHomeProps {
     currentUser?: SafeUser | null;
@@ -42,6 +39,7 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
     const [isLoading, setIsLoading] = useState(false);
     const [playerRemoved, setPlayerRemoved] = useState(false);
     const [tournament, setTournament] = useState<any>(null);
+    const currUserName = currentUser?.name ? currentUser.name : currentUser?.username;
 
 
     function createPlayerColumns(numPlayers: number): { name: string, uid: string }[] {
@@ -110,7 +108,7 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
                 }
             }
 
-            if (teamName === currentUser?.name) {
+            if (teamName === currUserName) {
                 tmpStructuredPlayers.unshift(teamMap);
             } else {
                 tmpStructuredPlayers.push(teamMap);
@@ -122,7 +120,7 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
             setStructuredPlayers(tmpStructuredPlayers);
             // setIsLoading(false);
         }
-    }, [players, columns, currentUser, structuredPlayers]);
+    }, [players, columns, currentUser, structuredPlayers, currUserName]);
 
     // Define the API call function
     const handlePlayerRemoval = useCallback((teamId: string, playerId: string) => {
@@ -149,7 +147,7 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
 
     const renderCell = useCallback((team: any, columnKey: React.Key) => {
         const cellValue = team[columnKey];
-        const userTeam = team['user'] == currentUser?.name;
+        const userTeam = team['user'] == currUserName;
         const teamData = teams[team['user']];
     
         if (columnKey === "user") {
@@ -162,7 +160,7 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
                             width="100%"
                             alt="card background"
                             className="w-full object-cover h-[140px]"
-                            src={currentUser?.image? currentUser.image : "/images/placeholder.png"}
+                            src={currentUser?.image ? currentUser.image : "/images/placeholder.jpg"}
                         />
                     </CardBody>
                     <CardFooter className="text-small justify-between">
@@ -229,7 +227,7 @@ const LeagueTeam: React.FC<LeagueHomeProps> = ({
         } else {
             return cellValue;
         }
-    }, [teams, currentUser, playerPickerModal, handlePlayerRemoval]);
+    }, [teams, currentUser, currUserName, playerPickerModal, handlePlayerRemoval]);
     
 
     return (

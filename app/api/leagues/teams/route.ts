@@ -87,8 +87,9 @@ export async function GET(
     });
     
     // create an object, mapping users.name to teams
-    const userTeams = new Map<string, any>();
-    const userPlayers = new Map<string, any>();
+    const userTeams: { [key: string]: any } = {};
+    const userPlayers: { [key: string]: any } = {};
+
     for (const team of teams) {
         const user = users.find(user => user.id === team.userId);
         const playersTeam = playersTeams.filter(playerTeam => playerTeam.teamId === team.id);
@@ -102,10 +103,10 @@ export async function GET(
         } 
         // sort players on elo, high to low
         players.sort((a, b) => b.elo - a.elo);
-        userTeams.set(name, team);
-        userPlayers.set(name, players);
+        userTeams[name] = team;
+        userPlayers[name] = players;
     }
-    
+
     // return userteams and userplayers
     return NextResponse.json({userTeams, userPlayers});
 };
