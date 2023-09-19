@@ -13,7 +13,7 @@ const font = Nunito({
 
 export const metadata = {
   title: 'Fantasy Tennis',
-  description: 'SmashIt Fantasy Tennis Clone',
+  description: 'Bgak Corp. Fantasy Tennis',
 }
 
 export default async function RootLayout({
